@@ -77,6 +77,7 @@ namespace PicSim.Models {
       Operation[] sortedOpValues = SortEnumValues();
       foreach (KeyValuePair<int, int> opcode in opcodes) {
         ObjectifyOperation(sortedOpValues, opcode);
+        ObjectifyArgs(opcode);
       }
     }
 
@@ -104,6 +105,10 @@ namespace PicSim.Models {
       else {
         return false;
       }
+    }
+
+    private void ObjectifyArgs(KeyValuePair<int, int> opcode) {
+
     }
 
     #endregion //Methods
