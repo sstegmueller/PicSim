@@ -17,6 +17,7 @@
             <RowDefinition Height=".4*"/>
             <RowDefinition Height=".4*"/>
         </Grid.RowDefinitions>
-        <Button x:Name="Test" Grid.Row="1" Grid.Column="1"/>
+        <Button x:Name="OpenFile" Grid.Row="1" Grid.Column="1" Content="{Binding OpenFileContent}"/>
+        <Label x:Name="FileName" Grid.Row="2" Grid.Column="1" Content="{Binding FileNameContent}"/>
     </Grid>
 </Window>
