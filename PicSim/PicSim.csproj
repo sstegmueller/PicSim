@@ -77,6 +77,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="Arguments.cs" />
+    <Compile Include="Models\OperationModel.cs" />
     <Compile Include="Models\ProgramModel.cs" />
     <Compile Include="Operations.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

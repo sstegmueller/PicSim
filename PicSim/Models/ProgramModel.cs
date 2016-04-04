@@ -22,6 +22,15 @@ namespace PicSim.Models {
     #region Constructors
 
     public ProgramModel(string filePath) {
+      ParseFile(filePath);
+      ObjectifyOPCodes();
+    }
+
+    #endregion //Constructors
+
+    #region Methods
+
+    private void ParseFile(string filePath) {
       int counter = 0;
       string line;
 
@@ -34,13 +43,8 @@ namespace PicSim.Models {
         }
         counter++;
       }
-
       file.Close();
     }
-
-    #endregion //Constructors
-
-    #region Methods
 
     private int ParseOPCodeIndex(string line) {
       string subString;
@@ -53,6 +57,12 @@ namespace PicSim.Models {
       long int64 = Int64.Parse(subString, NumberStyles.HexNumber);
       byte[] bytes = BitConverter.GetBytes(int64);
       return new BitArray(bytes);
+    }
+
+    private void ObjectifyOPCodes() {
+      foreach (KeyValuePair<int, BitArray> opcode in _opcodes) {
+        
+      }
     }
 
     #endregion //Methods
