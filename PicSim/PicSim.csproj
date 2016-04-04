@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Models\ProgramModel.cs" />
+    <Compile Include="Operations.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
