@@ -10,8 +10,7 @@ namespace PicSim.Models {
   class ProgramModel {
 
     #region Fields
-
-    private Dictionary<int, int> _opcodes = new Dictionary<int, int>();
+    
     private List<OperationModel> _operations = new List<OperationModel>();
 
     #endregion //Fields
@@ -36,28 +35,30 @@ namespace PicSim.Models {
     #region Constructors
 
     public ProgramModel(string filePath) {
-      ParseFile(filePath);
-      ObjectifyOPCodes();
+      Dictionary<int, int> opcodes = ParseFile(filePath);
+      ObjectifyOPCodes(opcodes);
     }
 
     #endregion //Constructors
 
     #region Methods
 
-    private void ParseFile(string filePath) {
+    private Dictionary<int, int> ParseFile(string filePath) {
       int counter = 0;
       string line;
+      Dictionary<int, int> opcodes = new Dictionary<int, int>();
 
-      // Read the file and display it line by line.
+      // Read the file save OP-Codes
       System.IO.StreamReader file = new System.IO.StreamReader(filePath);
       while ((line = file.ReadLine()) != null) {
         char[] chars = line.ToCharArray();
         if (char.IsNumber(chars[0])) {
-          _opcodes.Add(ParseOPCodeIndex(line), ParseOPCodeCommand(line));
+          opcodes.Add(ParseOPCodeIndex(line), ParseOPCodeCommand(line));
         }
         counter++;
       }
       file.Close();
+      return opcodes;
     }
 
     private int ParseOPCodeIndex(string line) {
@@ -72,9 +73,9 @@ namespace PicSim.Models {
       return hex;
     }
 
-    private void ObjectifyOPCodes() {
+    private void ObjectifyOPCodes(Dictionary<int, int> opcodes) {
       Operation[] sortedOpValues = SortEnumValues();
-      foreach (KeyValuePair<int, int> opcode in _opcodes) {
+      foreach (KeyValuePair<int, int> opcode in opcodes) {
         ObjectifyOperation(sortedOpValues, opcode);
       }
     }
