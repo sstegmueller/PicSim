@@ -9,6 +9,7 @@ Muss:
 - Programmierfehler handhaben
 - Dateihandling
 - Funktionen: START/ STOP/ RESET/ Breakpoints
+
 Kann:
 - 7-Segmentanzeige
 - Impulsgenerator
