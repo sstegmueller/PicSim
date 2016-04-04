@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PicSim {
-  enum Operations {
+  [Flags]
+  enum Operation {
     ADDWF   = 0x0700,
     ANDWF   = 0x0500,
     CLRF    = 0x0180,
@@ -40,6 +41,6 @@ namespace PicSim {
     RETURN  = 0x0008,
     SLEEP   = 0x0063,
     SUBLW   = 0x3C00,
-    XORLW   = 0x3A00
+    XORLW   = 0x3A00,
   }
 }

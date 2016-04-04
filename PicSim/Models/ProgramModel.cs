@@ -11,11 +11,25 @@ namespace PicSim.Models {
 
     #region Fields
 
-    private Dictionary<int, BitArray> _opcodes = new Dictionary<int, BitArray>();
+    private Dictionary<int, int> _opcodes = new Dictionary<int, int>();
+    private List<OperationModel> _operations = new List<OperationModel>();
 
     #endregion //Fields
 
     #region Properties
+
+    public List<OperationModel> Operations
+    {
+      get
+      {
+        return _operations;
+      }
+
+      set
+      {
+        _operations = value;
+      }
+    }
 
     #endregion //Properties
 
@@ -52,16 +66,42 @@ namespace PicSim.Models {
       return Convert.ToInt32(subString);
     }
 
-    private BitArray ParseOPCodeCommand(string line) {
-      string subString = line.Substring(5, 8);
-      long int64 = Int64.Parse(subString, NumberStyles.HexNumber);
-      byte[] bytes = BitConverter.GetBytes(int64);
-      return new BitArray(bytes);
+    private int ParseOPCodeCommand(string line) {
+      string subString = line.Substring(5, 4);
+      int hex = Convert.ToInt32(subString, 16);
+      return hex;
     }
 
     private void ObjectifyOPCodes() {
-      foreach (KeyValuePair<int, BitArray> opcode in _opcodes) {
-        
+      Operation[] sortedOpValues = SortEnumValues();
+      foreach (KeyValuePair<int, int> opcode in _opcodes) {
+        ObjectifyOperation(sortedOpValues, opcode);
+      }
+    }
+
+    private Operation[] SortEnumValues() {
+      Operation[] opValues = Enum.GetValues(typeof(Operation)).Cast<Operation>().ToArray();
+      Array.Sort(opValues);
+      Array.Reverse(opValues);
+      return opValues;
+    }
+
+    private void ObjectifyOperation(Operation[] opValues, KeyValuePair<int, int> opcode) {
+      foreach (Operation opMask in opValues) {
+        if (HasFlag(opcode, opMask)) {
+          Operations.Add(new OperationModel(opcode.Key, opMask));
+          break;
+        }
+        Console.WriteLine("Unknown Operation");
+      }
+    }
+
+    private bool HasFlag(KeyValuePair<int, int> opcode, Operation op) {
+      if ((Convert.ToInt32(op) & opcode.Value) == Convert.ToInt32(op)) {
+        return true;
+      }
+      else {
+        return false;
       }
     }
 
