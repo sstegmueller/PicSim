@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ namespace PicSim.Models {
 
     #region Fields
 
-    private Dictionary<int, int> _opcodes;
+    private Dictionary<int, BitArray> _opcodes = new Dictionary<int, BitArray>();
 
     #endregion //Fields
 
@@ -28,8 +30,7 @@ namespace PicSim.Models {
       while ((line = file.ReadLine()) != null) {
         char[] chars = line.ToCharArray();
         if (char.IsNumber(chars[0])) {
-          System.Console.WriteLine(line);
-          _opcodes.Add(GetOPCodeIndex(line), GetOPCodeCommand(line));
+          _opcodes.Add(ParseOPCodeIndex(line), ParseOPCodeCommand(line));
         }
         counter++;
       }
@@ -41,20 +42,17 @@ namespace PicSim.Models {
 
     #region Methods
 
-    private int GetOPCodeIndex(string line) {
-      string rawIndex = line.Take<char>(4).ToString();
-      int index = Convert.ToInt32(rawIndex);
-      return index;
+    private int ParseOPCodeIndex(string line) {
+      string subString;
+      subString = line.Substring(0, 4);
+      return Convert.ToInt32(subString);
     }
 
-    private int GetOPCodeCommand(string line) {
-      int command;
-      char[] commandDigits = new char[4];
-      for (int character = 5; character < 9; character++) {
-        commandDigits[character - 5] = line[character];
-      }
-      command = Convert.ToInt32(commandDigits.ToString());
-      return command;
+    private BitArray ParseOPCodeCommand(string line) {
+      string subString = line.Substring(5, 8);
+      long int64 = Int64.Parse(subString, NumberStyles.HexNumber);
+      byte[] bytes = BitConverter.GetBytes(int64);
+      return new BitArray(bytes);
     }
 
     #endregion //Methods
