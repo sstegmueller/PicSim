@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace PicSim {
 
   [StructLayout(LayoutKind.Explicit)]
-  struct Arguments {
+  struct Argument {
 
     [FieldOffset(0)]
     public byte byte1;

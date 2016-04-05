@@ -108,7 +108,11 @@ namespace PicSim.Models {
     }
 
     private void ObjectifyArgs(KeyValuePair<int, int> opcode) {
+      foreach (OperationModel op in Operations) {
+        if (op.Operation.HasFlag(OperationType.ByteOrientedFD)) {
 
+        }
+      }
     }
 
     #endregion //Methods

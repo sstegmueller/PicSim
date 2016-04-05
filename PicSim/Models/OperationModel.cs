@@ -12,7 +12,8 @@ namespace PicSim.Models {
     private bool _isBreak;
     private int _index;
     private Operation _operation;
-    private Arguments _args;
+    private OperationType _operationType;
+    private Argument _args;
 
     #endregion //Fields
 
@@ -37,36 +38,37 @@ namespace PicSim.Models {
       {
         return _index;
       }
-
-      set
-      {
-        _index = value;
-      }
     }
 
-    internal Operation Operation
+    public Operation Operation
     {
       get
       {
         return _operation;
       }
-
-      set
-      {
-        _operation = value;
-      }
     }
 
-    internal Arguments Args
+    public Argument Args
     {
       get
       {
         return _args;
       }
-
       set
       {
-        _args = value;
+        _args = Args;
+      }
+    }
+
+    public OperationType OperationType
+    {
+      get
+      {
+        return _operationType;
+      }
+      set
+      {
+        _operationType = OperationType;
       }
     }
 
@@ -75,8 +77,8 @@ namespace PicSim.Models {
     #region Constructors
 
     public OperationModel(int index, Operation operation) {
-      Index = index;
-      Operation = operation;
+      _index = index;
+      _operation = operation;
     }
 
     #endregion //Constructors
