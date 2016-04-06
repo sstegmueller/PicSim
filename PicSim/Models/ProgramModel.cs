@@ -64,7 +64,7 @@ namespace PicSim.Models {
     private int ParseOPCodeIndex(string line) {
       string subString;
       subString = line.Substring(0, 4);
-      return Convert.ToInt32(subString);
+      return Convert.ToInt32(subString, 16);
     }
 
     private int ParseOPCodeCommand(string line) {
@@ -94,7 +94,6 @@ namespace PicSim.Models {
           Operations.Add(new OperationModel(opcode.Key, opMask));
           break;
         }
-        Console.WriteLine("Unknown Operation");
       }
     }
 
@@ -107,12 +106,58 @@ namespace PicSim.Models {
       }
     }
 
-    private void ObjectifyArgs(KeyValuePair<int, int> opcode) {
-      foreach (OperationModel op in Operations) {
-        if (op.Operation.HasFlag(OperationType.ByteOrientedFD)) {
-
-        }
+    private bool HasFlag(Operation op, OperationType type) {
+      if ((Convert.ToInt32(op) & Convert.ToInt32(type)) == Convert.ToInt32(type)) {
+        return true;
       }
+      else {
+        return false;
+      }
+    }
+
+    private void ObjectifyArgs(KeyValuePair<int, int> opcode) {
+      OperationModel opModel = Operations.Last();
+      if (OperationType.ByteOrientedFD.HasFlag((OperationType)opModel.Operation)) {
+        ParseFDArgs(opcode, opModel);
+      }
+      if (OperationType.ByteOrientedF.HasFlag((OperationType)opModel.Operation)) {
+        ParseFArgs(opcode, opModel);
+      }
+      if (OperationType.BitOriented.HasFlag((OperationType)opModel.Operation)) {
+        ParseBFArgs(opcode, opModel);
+      }
+      if (OperationType.LiteralControl.HasFlag((OperationType)opModel.Operation)) {
+        ParseKArgs(opcode, opModel);
+      }
+    }
+
+    private void ParseFDArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
+      int intD = opcode.Value & Convert.ToInt32(0x0080);
+      BitArray byteD = new BitArray(new int[] { intD });
+      int f = opcode.Value & Convert.ToInt32(0x007F);
+      opModel.SetArgs(byteD[7], f);
+    }
+
+    private void ParseFArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
+      int f = opcode.Value & Convert.ToInt32(0x007F);
+      opModel.SetArgs(f);
+    }
+
+    private void ParseBFArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
+      int b = opcode.Value & Convert.ToInt32(0x0380);
+      int f = opcode.Value & Convert.ToInt32(0x007F);
+      opModel.SetArgs(b, f);
+    }
+
+    private void ParseKArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
+      int k;
+      if (opModel.Operation == Operation.CALL || opModel.Operation == Operation.GOTO) {
+        k = opcode.Value & Convert.ToInt32(0x07FF);
+      }
+      else {
+        k = opcode.Value & Convert.ToInt32(0x00FF);
+      }
+      opModel.SetArgs(k);
     }
 
     #endregion //Methods
