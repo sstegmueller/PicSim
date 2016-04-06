@@ -10,9 +10,11 @@ namespace PicSim.ViewModels {
 
     #region Fields
 
+    private string _index;
     private bool _breakPoint;
     private string _operationName;
-    private string _operationArgs;
+    private string _operationArg1;
+    private string _operationArg2;
 
     #endregion //Fields
 
@@ -46,17 +48,45 @@ namespace PicSim.ViewModels {
       }
     }
 
-    public string OperationArgs
+    public string OperationArg1
     {
       get
       {
-        return _operationArgs;
+        return _operationArg1;
       }
 
       set
       {
-        _operationArgs = value;
-        NotifyOfPropertyChange(() => OperationArgs);
+        _operationArg1 = value;
+        NotifyOfPropertyChange(() => OperationArg1);
+      }
+    }
+
+    public string Index
+    {
+      get
+      {
+        return _index;
+      }
+
+      set
+      {
+        _index = value;
+        NotifyOfPropertyChange(() => Index);
+      }
+    }
+
+    public string OperationArg2
+    {
+      get
+      {
+        return _operationArg2;
+      }
+
+      set
+      {
+        _operationArg2 = value;
+        NotifyOfPropertyChange(() => OperationArg2);
       }
     }
 
@@ -64,9 +94,17 @@ namespace PicSim.ViewModels {
 
     #region Constructors
 
-    public OperationViewModel(string opName, string args) {
+    public OperationViewModel(string index, string opName, string arg) {
+      Index = index;
       OperationName = opName;
-      OperationArgs = args;
+      OperationArg1 = arg;
+    }
+
+    public OperationViewModel(string index, string opName, string arg1, string arg2) {
+      Index = index;
+      OperationName = opName;
+      OperationArg1 = arg1;
+      OperationArg2 = arg2;
     }
 
     #endregion //Constructors

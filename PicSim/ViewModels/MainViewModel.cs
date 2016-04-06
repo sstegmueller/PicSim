@@ -7,12 +7,15 @@ using Caliburn.Micro;
 using PicSim.Models;
 
 namespace PicSim.ViewModels {
-  class MainViewModel : Caliburn.Micro.Screen {
+  class MainViewModel : Screen {
 
     #region Fields
 
+    private string _windowTitle;
     private string _openFileContent;
     private string _fileNameContent;
+    private ProgramModel _progModel;
+    private BindableCollection<OperationViewModel> _operations;
 
     #endregion //Fields
 
@@ -46,17 +49,69 @@ namespace PicSim.ViewModels {
       }
     }
 
+    public string WindowTitle
+    {
+      get
+      {
+        return _windowTitle;
+      }
+
+      set
+      {
+        _windowTitle = value;
+        NotifyOfPropertyChange(() => WindowTitle);
+      }
+    }
+
+    public BindableCollection<OperationViewModel> Operations
+    {
+      get
+      {
+        return _operations;
+      }
+
+      set
+      {
+        _operations = value;
+        NotifyOfPropertyChange(() => Operations);
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
 
     public MainViewModel() {
+      WindowTitle = "PicSim";
       OpenFileContent = "Open File";
+      Operations = new BindableCollection<OperationViewModel>();
     }
 
     #endregion //Constructors
 
     #region Methods
+
+    private void ShowOperations() {
+      foreach (OperationModel op in _progModel.Operations) {
+        if (OperationType.ByteOrientedFD.HasFlag((OperationType)op.Operation)) {
+          Operations.Add(new OperationViewModel(op.Index.ToString(),
+                                                op.Operation.ToString(),
+                                                op.Args.Bool1.ToString(),
+                                                op.Args.Byte2.ToString()));
+        }
+        if (OperationType.ByteOrientedF.HasFlag((OperationType)op.Operation) || OperationType.LiteralControl.HasFlag((OperationType)op.Operation)) {
+          Operations.Add(new OperationViewModel(op.Index.ToString(),
+                                                op.Operation.ToString(),
+                                                op.Args.Byte1.ToString()));
+        }
+        if (OperationType.BitOriented.HasFlag((OperationType)op.Operation)) {
+          Operations.Add(new OperationViewModel(op.Index.ToString(),
+                                                op.Operation.ToString(),
+                                                op.Args.Byte1.ToString(),
+                                                op.Args.Byte2.ToString()));
+        }
+      }
+    }
 
     public void OpenFile() {
       // Create OpenFileDialog 
@@ -77,7 +132,8 @@ namespace PicSim.ViewModels {
       if (result == true) {
         // Open document 
         FileNameContent = dlg.SafeFileName;
-        ProgramModel progModel = new ProgramModel(dlg.FileName);
+        _progModel = new ProgramModel(dlg.FileName);
+        ShowOperations();
       }      
     }
 
