@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PicSim.Views"
+        xmlns:local="clr-namespace:PicSim.Views"        
+        xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
         Title="MainView" Height="300" Width="300">
     <Grid>
@@ -19,5 +20,13 @@
         </Grid.RowDefinitions>
         <Button x:Name="OpenFile" Grid.Row="1" Grid.Column="1" Content="{Binding OpenFileContent}"/>
         <Label x:Name="FileName" Grid.Row="2" Grid.Column="1" Content="{Binding FileNameContent}"/>
+        <ListBox x:Name="Locations" ItemsSource="{Binding Operations}" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl cal:View.Model="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        
     </Grid>
 </Window>
