@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:PicSim.Views"        
         xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="800" Width="1100">
+        Title="{Binding WindowTitle}" Height="800" Width="1100"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".3*"/>
