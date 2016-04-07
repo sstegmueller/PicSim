@@ -98,17 +98,20 @@ namespace PicSim.ViewModels {
                                                 op.Operation.ToString(),
                                                 op.Args.Bool1.ToString(),
                                                 op.Args.Byte2.ToString()));
+          continue;
         }
         if (OperationType.ByteOrientedF.HasFlag((OperationType)op.Operation) || OperationType.LiteralControl.HasFlag((OperationType)op.Operation)) {
           Operations.Add(new OperationViewModel(op.Index.ToString(),
                                                 op.Operation.ToString(),
                                                 op.Args.Byte1.ToString()));
+          continue;
         }
         if (OperationType.BitOriented.HasFlag((OperationType)op.Operation)) {
           Operations.Add(new OperationViewModel(op.Index.ToString(),
                                                 op.Operation.ToString(),
                                                 op.Args.Byte1.ToString(),
                                                 op.Args.Byte2.ToString()));
+          continue;
         }
       }
     }

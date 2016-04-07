@@ -119,15 +119,19 @@ namespace PicSim.Models {
       OperationModel opModel = Operations.Last();
       if (OperationType.ByteOrientedFD.HasFlag((OperationType)opModel.Operation)) {
         ParseFDArgs(opcode, opModel);
+        return;
       }
       if (OperationType.ByteOrientedF.HasFlag((OperationType)opModel.Operation)) {
         ParseFArgs(opcode, opModel);
+        return;
       }
       if (OperationType.BitOriented.HasFlag((OperationType)opModel.Operation)) {
         ParseBFArgs(opcode, opModel);
+        return;
       }
       if (OperationType.LiteralControl.HasFlag((OperationType)opModel.Operation)) {
         ParseKArgs(opcode, opModel);
+        return;
       }
     }
 

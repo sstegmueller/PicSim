@@ -67,7 +67,7 @@ namespace PicSim.Models {
     #endregion //Constructors
 
     #region Methods
-
+    
     public void SetArgs(bool d, int f) {
       _args = new Arguments(d, f);
     }
@@ -79,7 +79,7 @@ namespace PicSim.Models {
     public void SetArgs(int f) {
       _args = new Arguments(f);
     }
-
+ 
     #endregion //Methods
 
   }

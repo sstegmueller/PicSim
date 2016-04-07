@@ -57,22 +57,13 @@ namespace PicSim.ViewModels {
 
       set
       {
-        _operationArg1 = value;
+        if (value != "True" && value != "False") {
+          _operationArg1 = ToHexString(value);
+        }
+        else {
+          _operationArg1 = value;
+        }
         NotifyOfPropertyChange(() => OperationArg1);
-      }
-    }
-
-    public string Index
-    {
-      get
-      {
-        return _index;
-      }
-
-      set
-      {
-        _index = value;
-        NotifyOfPropertyChange(() => Index);
       }
     }
 
@@ -85,8 +76,22 @@ namespace PicSim.ViewModels {
 
       set
       {
-        _operationArg2 = value;
+        _operationArg2 = ToHexString(value);
         NotifyOfPropertyChange(() => OperationArg2);
+      }
+    }
+
+    public string Index
+    {
+      get
+      {
+        return _index;
+      }
+
+      set
+      {
+        _index = ToHexString(value);
+        NotifyOfPropertyChange(() => Index);
       }
     }
 
@@ -110,6 +115,11 @@ namespace PicSim.ViewModels {
     #endregion //Constructors
 
     #region Methods
+
+    private string ToHexString(string intString) {
+      int intAgain = int.Parse(intString);
+      return String.Format("{0:X}", intAgain);
+    }
 
     #endregion //Methods
 
