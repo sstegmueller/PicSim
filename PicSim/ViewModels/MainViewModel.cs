@@ -14,6 +14,11 @@ namespace PicSim.ViewModels {
     private string _windowTitle;
     private string _openFileContent;
     private string _fileNameContent;
+    private string _operationIndex;
+    private string _operationBreak;
+    private string _operationName;
+    private string _operationArg1;
+    private string _operationArg2;
     private ProgramModel _progModel;
     private BindableCollection<OperationViewModel> _operations;
 
@@ -77,6 +82,76 @@ namespace PicSim.ViewModels {
       }
     }
 
+    public string OperationIndex
+    {
+      get
+      {
+        return _operationIndex;
+      }
+
+      set
+      {
+        _operationIndex = value;
+        NotifyOfPropertyChange(() => OperationIndex);
+      }
+    }
+
+    public string OperationBreak
+    {
+      get
+      {
+        return _operationBreak;
+      }
+
+      set
+      {
+        _operationBreak = value;
+        NotifyOfPropertyChange(() => OperationBreak);
+      }
+    }
+
+    public string OperationName
+    {
+      get
+      {
+        return _operationName;
+      }
+
+      set
+      {
+        _operationName = value;
+        NotifyOfPropertyChange(() => OperationName);
+      }
+    }
+
+    public string OperationArg1
+    {
+      get
+      {
+        return _operationArg1;
+      }
+
+      set
+      {
+        _operationArg1 = value;
+        NotifyOfPropertyChange(() => OperationArg1);
+      }
+    }
+
+    public string OperationArg2
+    {
+      get
+      {
+        return _operationArg2;
+      }
+
+      set
+      {
+        _operationArg2 = value;
+        NotifyOfPropertyChange(() => OperationArg2);
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
@@ -84,6 +159,11 @@ namespace PicSim.ViewModels {
     public MainViewModel() {
       WindowTitle = "PicSim";
       OpenFileContent = "Open File";
+      OperationIndex = "Index";
+      OperationBreak = "Breakpoint";
+      OperationName = "Operation";  
+      OperationArg1 = "Argument 1";
+      OperationArg2 = "Argument 2";
       Operations = new BindableCollection<OperationViewModel>();
     }
 
@@ -92,6 +172,9 @@ namespace PicSim.ViewModels {
     #region Methods
 
     private void ShowOperations() {
+      if (Operations.Count != 0) {
+        Operations.Clear();
+      }
       foreach (OperationModel op in _progModel.Operations) {
         if (OperationType.ByteOrientedFD.HasFlag((OperationType)op.Operation)) {
           Operations.Add(new OperationViewModel(op.Index.ToString(),

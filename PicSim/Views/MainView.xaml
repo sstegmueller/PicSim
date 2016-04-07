@@ -10,27 +10,43 @@
         WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width=".3*"/>
-            <ColumnDefinition Width=".3*"/>
-            <ColumnDefinition Width=".3*"/>
+            <ColumnDefinition Width="365*"/>
+            <ColumnDefinition Width="380*"/>
+            <ColumnDefinition Width="349*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height=".1*"/>
             <RowDefinition Height=".4*"/>
             <RowDefinition Height=".4*"/>
         </Grid.RowDefinitions>
-        <StackPanel>
+        <StackPanel Margin="0,0,1.8,342" Grid.RowSpan="2">
             <WrapPanel>
                 <Button x:Name="OpenFile" Grid.Row="0" Grid.Column="0" Content="{Binding OpenFileContent}"/>
+                <Label x:Name="FileName" Grid.Row="0" Grid.Column="0" Content="{Binding FileNameContent}"/>
             </WrapPanel>
         </StackPanel>
-        <Label x:Name="FileName" Grid.Row="2" Grid.Column="1" Content="{Binding FileNameContent}"/>
-        <ListBox x:Name="Operations" ItemsSource="{Binding Operations}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <ContentControl cal:View.Model="{Binding}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>        
+        <DockPanel Grid.Column="1" Grid.Row="2" Height="auto" Width="auto" LastChildFill="True" Grid.ColumnSpan="2" Margin="0.2,0,348.6,0.4">
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="OperationIndex" Grid.Column="0" HorizontalAlignment="Left"/>
+                <Label x:Name="OperationBreak" Grid.Column="1" HorizontalAlignment="Left"/>
+                <Label x:Name="OperationName" Grid.Column="2" HorizontalAlignment="Left"/>
+                <Label x:Name="OperationArg1" Grid.Column="3" HorizontalAlignment="Left"/>
+                <Label x:Name="OperationArg2" Grid.Column="4" HorizontalAlignment="Left"/>
+            </Grid>
+            <ListBox x:Name="Operations" ItemsSource="{Binding Operations}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl cal:View.Model="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
     </Grid>
 </Window>

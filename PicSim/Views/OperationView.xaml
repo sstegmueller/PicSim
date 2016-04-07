@@ -8,16 +8,16 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="25"/>
-            <ColumnDefinition Width="25"/>
-            <ColumnDefinition Width="60"/>
-            <ColumnDefinition Width="50"/>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="40"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="80"/>
         </Grid.ColumnDefinitions>
-        <Label x:Name="Index" Grid.Column="0" VerticalAlignment="Center"/>
-        <CheckBox x:Name="BreakPoint" Grid.Column="1" VerticalAlignment="Center"/>
-        <Label x:Name="OperationName" Grid.Column="2" VerticalAlignment="Center" Content="{Binding OperationName}"/>
-        <Label x:Name="OperationArg1" Grid.Column="3" VerticalAlignment="Center" Content="{Binding OperationArg1}"/>
-        <Label x:Name="OperationArg2" Grid.Column="4" VerticalAlignment="Center" Content="{Binding OperationArg2}"/>
+        <Label x:Name="Index" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        <CheckBox x:Name="BreakPoint" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        <Label x:Name="OperationName" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        <Label x:Name="OperationArg1" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        <Label x:Name="OperationArg2" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Left"/>
     </Grid> 
 </UserControl>
