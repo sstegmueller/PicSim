@@ -78,17 +78,23 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Arguments.cs" />
+    <Compile Include="ConvertHelper.cs" />
     <Compile Include="Models\OperationModel.cs" />
     <Compile Include="Models\ProgramModel.cs" />
+    <Compile Include="Models\RamModel.cs" />
     <Compile Include="Operation.cs" />
     <Compile Include="OperationType.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OperationViewModel.cs" />
+    <Compile Include="ViewModels\RamViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OperationView.xaml.cs">
       <DependentUpon>OperationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RamView.xaml.cs">
+      <DependentUpon>RamView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OperationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RamView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

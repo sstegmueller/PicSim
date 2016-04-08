@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="PicSim.Views.RamView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PicSim.Views"
+             xmlns:tk="http://schemas.microsoft.com/wpf/2008/toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <DataGrid x:Name="Ram" HeadersVisibility="All" RowHeaderWidth="50">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock x:Name="ColumnHeaders" Text="{Binding ColumnHeaders}"/>
+                    </DataGridTemplateColumn.Header>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            <DataGrid.RowHeaderTemplate>
+                <DataTemplate>
+                    <TextBlock x:Name="RowHeaders" Text="{Binding RowHeaders}"/>
+                </DataTemplate>
+            </DataGrid.RowHeaderTemplate>
+        </DataGrid>
+
+    </Grid>
+</UserControl>

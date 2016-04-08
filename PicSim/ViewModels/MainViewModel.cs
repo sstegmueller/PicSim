@@ -21,6 +21,7 @@ namespace PicSim.ViewModels {
     private string _operationArg2;
     private ProgramModel _progModel;
     private BindableCollection<OperationViewModel> _operations;
+    private RamViewModel _ramViewModel;
 
     #endregion //Fields
 
@@ -152,6 +153,20 @@ namespace PicSim.ViewModels {
       }
     }
 
+    public RamViewModel RamViewModel
+    {
+      get
+      {
+        return _ramViewModel;
+      }
+
+      set
+      {
+        _ramViewModel = value;
+        NotifyOfPropertyChange(() => RamViewModel);
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
@@ -165,6 +180,7 @@ namespace PicSim.ViewModels {
       OperationArg1 = "Argument 1";
       OperationArg2 = "Argument 2";
       Operations = new BindableCollection<OperationViewModel>();
+      RamViewModel = new RamViewModel();
     }
 
     #endregion //Constructors
