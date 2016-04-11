@@ -230,6 +230,7 @@ namespace PicSim.ViewModels {
                                                 op.Args.Byte2.ToString()));
           continue;
         }
+        Operations.Add(new OperationViewModel(op.Index.ToString(), op.Operation.ToString()));
       }
     }
 

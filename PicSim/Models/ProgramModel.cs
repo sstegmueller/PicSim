@@ -149,7 +149,7 @@ namespace PicSim.Models {
     }
 
     private void ParseBFArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
-      int b = opcode.Value & Convert.ToInt32(0x0380);
+      int b = (opcode.Value & Convert.ToInt32(0x0380)) / 0x80;
       int f = opcode.Value & Convert.ToInt32(0x007F);
       opModel.SetArgs(b, f);
     }

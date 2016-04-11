@@ -99,6 +99,11 @@ namespace PicSim.ViewModels {
 
     #region Constructors
 
+    public OperationViewModel(string index, string opName) {
+      Index = index;
+      OperationName = opName;
+    }
+
     public OperationViewModel(string index, string opName, string arg) {
       Index = index;
       OperationName = opName;

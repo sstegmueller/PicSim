@@ -13,6 +13,7 @@ namespace PicSim {
     private List<Operation> _byteOrientedF;
     private List<Operation> _bitOriented;
     private List<Operation> _literalControl;
+    private List<Operation> _noArg;
 
     #endregion //Fields
 
@@ -70,6 +71,19 @@ namespace PicSim {
       }
     }
 
+    public List<Operation> NoArg
+    {
+      get
+      {
+        return _noArg;
+      }
+
+      set
+      {
+        _noArg = value;
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
@@ -79,6 +93,7 @@ namespace PicSim {
       ByteOrientedF = new List<Operation>();
       BitOriented = new List<Operation>();
       LiteralControl = new List<Operation>();
+      NoArg = new List<Operation>();
 
       ByteOrientedFD.Add(Operation.ADDWF);
       ByteOrientedFD.Add(Operation.ANDWF);
