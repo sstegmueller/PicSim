@@ -117,19 +117,20 @@ namespace PicSim.Models {
 
     private void ObjectifyArgs(KeyValuePair<int, int> opcode) {
       OperationModel opModel = Operations.Last();
-      if (OperationType.ByteOrientedFD.HasFlag((OperationType)opModel.Operation)) {
+      OperationType opType = new OperationType();
+      if (TypeHasFlag(opType.ByteOrientedFD, opModel.Operation)) {
         ParseFDArgs(opcode, opModel);
         return;
       }
-      if (OperationType.ByteOrientedF.HasFlag((OperationType)opModel.Operation)) {
+      if (TypeHasFlag(opType.ByteOrientedF, opModel.Operation)) {
         ParseFArgs(opcode, opModel);
         return;
       }
-      if (OperationType.BitOriented.HasFlag((OperationType)opModel.Operation)) {
+      if (TypeHasFlag(opType.BitOriented, opModel.Operation)) {
         ParseBFArgs(opcode, opModel);
         return;
       }
-      if (OperationType.LiteralControl.HasFlag((OperationType)opModel.Operation)) {
+      if (TypeHasFlag(opType.LiteralControl, opModel.Operation)) {
         ParseKArgs(opcode, opModel);
         return;
       }
@@ -162,6 +163,15 @@ namespace PicSim.Models {
         k = opcode.Value & Convert.ToInt32(0x00FF);
       }
       opModel.SetArgs(k);
+    }
+
+    public bool TypeHasFlag(List<Operation> ops, Operation op) {
+      if (ops.Contains(op)) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
 
     #endregion //Methods

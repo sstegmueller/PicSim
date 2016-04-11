@@ -25,10 +25,10 @@
                 <Label x:Name="FileName" Grid.Row="0" Grid.Column="0" Content="{Binding FileNameContent}"/>
             </WrapPanel>
         </StackPanel>
-        <StackPanel Grid.Column="0" Grid.Row="1">
+        <StackPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
             <Label x:Name="RamName"/>
             <ContentControl x:Name="RamViewModel"/>
-        </StackPanel>        
+        </StackPanel>
         <DockPanel Grid.Column="1" Grid.Row="2" Height="auto" Width="auto" LastChildFill="True" Grid.ColumnSpan="2" Margin="0.2,0,348.6,0.4">
             <Grid DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
@@ -52,5 +52,6 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </DockPanel>
+        <Button x:Name="Start" Grid.Column="2" Grid.Row="2" Content="{Binding StartContent}"/>
     </Grid>
 </Window>

@@ -205,24 +205,25 @@ namespace PicSim.ViewModels {
     #region Methods
 
     private void ShowOperations() {
+      OperationType opType = new OperationType();
       if (Operations.Count != 0) {
         Operations.Clear();
       }
       foreach (OperationModel op in _progModel.Operations) {
-        if (OperationType.ByteOrientedFD.HasFlag((OperationType)op.Operation)) {
+        if (_progModel.TypeHasFlag(opType.ByteOrientedFD, op.Operation)) {
           Operations.Add(new OperationViewModel(op.Index.ToString(),
                                                 op.Operation.ToString(),
                                                 op.Args.Bool1.ToString(),
                                                 op.Args.Byte2.ToString()));
           continue;
         }
-        if (OperationType.ByteOrientedF.HasFlag((OperationType)op.Operation) || OperationType.LiteralControl.HasFlag((OperationType)op.Operation)) {
+        if (_progModel.TypeHasFlag(opType.ByteOrientedF, op.Operation) || _progModel.TypeHasFlag(opType.LiteralControl, op.Operation)) {
           Operations.Add(new OperationViewModel(op.Index.ToString(),
                                                 op.Operation.ToString(),
                                                 op.Args.Byte1.ToString()));
           continue;
         }
-        if (OperationType.BitOriented.HasFlag((OperationType)op.Operation)) {
+        if (_progModel.TypeHasFlag(opType.BitOriented, op.Operation)) {
           Operations.Add(new OperationViewModel(op.Index.ToString(),
                                                 op.Operation.ToString(),
                                                 op.Args.Byte1.ToString(),
