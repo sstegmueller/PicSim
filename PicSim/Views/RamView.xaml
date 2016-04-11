@@ -8,17 +8,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <DataGrid x:Name="Ram" HeadersVisibility="All" RowHeaderWidth="50">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.Header>
-                        <TextBlock x:Name="ColumnHeaders" Text="{Binding ColumnHeaders}"/>
-                    </DataGridTemplateColumn.Header>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
+        <DataGrid x:Name="Ram" HeadersVisibility="Column" RowHeaderWidth="50" IsReadOnly="True" ScrollViewer.CanContentScroll="True">
             <DataGrid.RowHeaderTemplate>
                 <DataTemplate>
-                    <TextBlock x:Name="RowHeaders" Text="{Binding RowHeaders}"/>
+                    <TextBlock Text="{Binding RowHeaders, 
+                                        RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
                 </DataTemplate>
             </DataGrid.RowHeaderTemplate>
         </DataGrid>
