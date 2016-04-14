@@ -12,7 +12,7 @@ namespace PicSim.ViewModels {
     #region Fields
 
     private string _index;
-    private bool _breakPoint;
+    private bool _isChecked;
     private string _operationName;
     private string _operationArg1;
     private string _operationArg2;
@@ -22,17 +22,18 @@ namespace PicSim.ViewModels {
 
     #region Properties
 
-    public bool BreakPoint
+    public bool IsChecked
     {
       get
       {
-        return _breakPoint;
+        return _isChecked;
       }
 
       set
       {
-        _breakPoint = value;
-        NotifyOfPropertyChange(() => BreakPoint);
+        _isChecked = value;
+        NotifyOfPropertyChange(() => IsChecked);
+				_opModel.IsBreak = !_opModel.IsBreak;
       }
     }
 

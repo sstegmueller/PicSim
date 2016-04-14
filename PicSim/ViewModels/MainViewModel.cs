@@ -237,6 +237,9 @@ namespace PicSim.ViewModels {
       }      
     }
 
+		public void Start() {
+		}
+
     #endregion //Methods
 
   }
