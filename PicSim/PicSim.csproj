@@ -84,6 +84,7 @@
     <Compile Include="Models\RamModel.cs" />
     <Compile Include="Operation.cs" />
     <Compile Include="OperationType.cs" />
+    <Compile Include="SpecialFunctionRegister.cs" />
     <Compile Include="TypeList.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OperationViewModel.cs" />
