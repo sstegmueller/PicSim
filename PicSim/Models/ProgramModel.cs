@@ -90,24 +90,15 @@ namespace PicSim.Models {
 
     private void ObjectifyOperation(Operation[] opValues, KeyValuePair<int, int> opcode) {
       foreach (Operation opMask in opValues) {
-        if (HasFlag(opcode, opMask)) {
+        if (HasMask(opcode.Value, opMask)) {
           Operations.Add(new OperationModel(opcode.Key, opMask));
           break;
         }
       }
     }
 
-    private bool HasFlag(KeyValuePair<int, int> opcode, Operation op) {
-      if ((Convert.ToInt32(op) & opcode.Value) == Convert.ToInt32(op)) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-
-    private bool HasFlag(Operation op, OperationType type) {
-      if ((Convert.ToInt32(op) & Convert.ToInt32(type)) == Convert.ToInt32(type)) {
+    private bool HasMask(int opcode, Operation op) {
+      if ((Convert.ToInt32(op) & opcode) == Convert.ToInt32(op)) {
         return true;
       }
       else {
@@ -117,20 +108,19 @@ namespace PicSim.Models {
 
     private void ObjectifyArgs(KeyValuePair<int, int> opcode) {
       OperationModel opModel = Operations.Last();
-      OperationType opType = new OperationType();
-      if (TypeHasFlag(opType.ByteOrientedFD, opModel.Operation)) {
+      if (TypeHasFlag(new TypeList(OperationType.ByteOrientedFD).OpsOfType, opModel.Operation)) {
         ParseFDArgs(opcode, opModel);
         return;
       }
-      if (TypeHasFlag(opType.ByteOrientedF, opModel.Operation)) {
+      if (TypeHasFlag(new TypeList(OperationType.ByteOrientedF).OpsOfType, opModel.Operation)) {
         ParseFArgs(opcode, opModel);
         return;
       }
-      if (TypeHasFlag(opType.BitOriented, opModel.Operation)) {
+      if (TypeHasFlag(new TypeList(OperationType.BitOriented).OpsOfType, opModel.Operation)) {
         ParseBFArgs(opcode, opModel);
         return;
       }
-      if (TypeHasFlag(opType.LiteralControl, opModel.Operation)) {
+      if (TypeHasFlag(new TypeList(OperationType.LiteralControl).OpsOfType, opModel.Operation)) {
         ParseKArgs(opcode, opModel);
         return;
       }
@@ -141,17 +131,20 @@ namespace PicSim.Models {
       BitArray byteD = new BitArray(new int[] { intD });
       int f = opcode.Value & Convert.ToInt32(0x007F);
       opModel.SetArgs(byteD[7], f);
+			opModel.OpType = OperationType.ByteOrientedFD;
     }
 
     private void ParseFArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
       int f = opcode.Value & Convert.ToInt32(0x007F);
       opModel.SetArgs(f);
+			opModel.OpType = OperationType.ByteOrientedFD;
     }
 
     private void ParseBFArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
       int b = (opcode.Value & Convert.ToInt32(0x0380)) / 0x80;
       int f = opcode.Value & Convert.ToInt32(0x007F);
       opModel.SetArgs(b, f);
+			opModel.OpType = OperationType.BitOriented;
     }
 
     private void ParseKArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
@@ -163,6 +156,7 @@ namespace PicSim.Models {
         k = opcode.Value & Convert.ToInt32(0x00FF);
       }
       opModel.SetArgs(k);
+			opModel.OpType = OperationType.LiteralControl;
     }
 
     public bool TypeHasFlag(List<Operation> ops, Operation op) {

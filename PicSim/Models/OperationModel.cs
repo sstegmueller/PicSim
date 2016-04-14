@@ -12,6 +12,7 @@ namespace PicSim.Models {
     private bool _isBreak;
     private int _index;
     private Operation _operation;
+		private OperationType _opType;
     private Arguments _args;
 
     #endregion //Fields
@@ -54,12 +55,21 @@ namespace PicSim.Models {
         return _args;
       }
     }
-    
-    #endregion //Properties
 
-    #region Constructors
-    
-    public OperationModel(int index, Operation operation) {
+		public OperationType OpType {
+			get {
+				return _opType;
+			}
+			set {
+				_opType = value;
+			}
+		}
+
+		#endregion //Properties
+
+		#region Constructors
+
+		public OperationModel(int index, Operation operation) {
       _index = index;
       _operation = operation;
     }

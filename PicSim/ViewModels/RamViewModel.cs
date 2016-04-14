@@ -59,7 +59,7 @@ namespace PicSim.ViewModels {
 
         for (int col = 0; col < nbColumns; col++) {
           if (col == 0) {
-            dr[col] = ConvertHelper.ToHexString(rowHeaderIndex);
+            dr[col] = ActionHelper.ToHexString(rowHeaderIndex);
           }
           else {
             dr[col] = "00";
@@ -75,7 +75,7 @@ namespace PicSim.ViewModels {
           Ram.Columns.Add("Register");
         }
         else {
-          Ram.Columns.Add("0" + ConvertHelper.ToHexString(i - 1), typeof(double));
+          Ram.Columns.Add("0" + ActionHelper.ToHexString(i - 1), typeof(double));
         }
       }
     }

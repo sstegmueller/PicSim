@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PicSim {
-  class ConvertHelper {
+  static class ActionHelper {
 
     #region Methods
 
@@ -18,7 +18,7 @@ namespace PicSim {
       return String.Format("{0:X}", value);
     }
 
-    #endregion //Methods
+		#endregion //Methods
 
-  }
+	}
 }

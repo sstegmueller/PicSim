@@ -78,12 +78,14 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Arguments.cs" />
-    <Compile Include="ConvertHelper.cs" />
+    <Compile Include="ActionHelper.cs" />
     <Compile Include="Models\OperationModel.cs" />
     <Compile Include="Models\ProgramModel.cs" />
     <Compile Include="Models\RamModel.cs" />
     <Compile Include="Operation.cs" />
+    <Compile Include="OperationLogic.cs" />
     <Compile Include="OperationType.cs" />
+    <Compile Include="TypeList.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OperationViewModel.cs" />
     <Compile Include="ViewModels\RamViewModel.cs" />
