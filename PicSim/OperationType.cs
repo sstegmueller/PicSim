@@ -9,6 +9,7 @@ namespace PicSim {
 		ByteOrientedFD = 1,
 		ByteOrientedF = 2,
 		BitOriented = 4,
-		LiteralControl = 8
+		LiteralControl = 8,
+		NoArgs = 16
 	}
 }

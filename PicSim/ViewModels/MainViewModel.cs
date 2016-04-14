@@ -209,27 +209,7 @@ namespace PicSim.ViewModels {
         Operations.Clear();
       }
       foreach (OperationModel op in _progModel.Operations) {
-        if (op.OpType == OperationType.ByteOrientedFD) {
-          Operations.Add(new OperationViewModel(op.Index.ToString(),
-                                                op.Operation.ToString(),
-                                                op.Args.Bool1.ToString(),
-                                                op.Args.Byte2.ToString()));
-          continue;
-        }
-        if (op.OpType == OperationType.ByteOrientedF || op.OpType == OperationType.LiteralControl) {
-          Operations.Add(new OperationViewModel(op.Index.ToString(),
-                                                op.Operation.ToString(),
-                                                op.Args.Byte1.ToString()));
-          continue;
-        }
-        if (op.OpType == OperationType.BitOriented) {
-          Operations.Add(new OperationViewModel(op.Index.ToString(),
-                                                op.Operation.ToString(),
-                                                op.Args.Byte1.ToString(),
-                                                op.Args.Byte2.ToString()));
-          continue;
-        }
-        Operations.Add(new OperationViewModel(op.Index.ToString(), op.Operation.ToString()));
+				Operations.Add(new OperationViewModel(op));
       }
     }
 

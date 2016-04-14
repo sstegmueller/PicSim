@@ -71,6 +71,14 @@ namespace PicSim {
 					OpsOfType.Add(Operation.SUBLW);
 					OpsOfType.Add(Operation.XORLW);
 					break;
+				case OperationType.NoArgs:
+					OpsOfType.Add(Operation.CLRW);
+					OpsOfType.Add(Operation.NOP);
+					OpsOfType.Add(Operation.CLRWDT);
+					OpsOfType.Add(Operation.RETFIE);
+					OpsOfType.Add(Operation.RETURN);
+					OpsOfType.Add(Operation.SLEEP);
+					break;
 			}     
     }
 

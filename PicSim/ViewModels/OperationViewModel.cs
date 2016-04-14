@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using PicSim.Models;
 
 namespace PicSim.ViewModels {
   class OperationViewModel : PropertyChangedBase {
@@ -15,6 +16,7 @@ namespace PicSim.ViewModels {
     private string _operationName;
     private string _operationArg1;
     private string _operationArg2;
+		private OperationModel _opModel;
 
     #endregion //Fields
 
@@ -116,6 +118,32 @@ namespace PicSim.ViewModels {
       OperationArg1 = arg1;
       OperationArg2 = arg2;
     }
+
+		public OperationViewModel(OperationModel opModel) {
+			_opModel = opModel;
+			if (opModel.OpType == OperationType.ByteOrientedFD) {
+				Index = opModel.Index.ToString();
+				OperationName = opModel.Operation.ToString();
+				OperationArg1 = opModel.Args.Bool1.ToString();
+				OperationArg2 = opModel.Args.Byte2.ToString();
+
+			}
+			if (opModel.OpType == OperationType.ByteOrientedF || opModel.OpType == OperationType.LiteralControl) {
+				Index = opModel.Index.ToString();
+				OperationName = opModel.Operation.ToString();
+				OperationArg1 = opModel.Args.Byte1.ToString();
+			}
+			if (opModel.OpType == OperationType.BitOriented) {
+				Index = opModel.Index.ToString();
+				OperationName = opModel.Operation.ToString();
+				OperationArg1 = opModel.Args.Byte1.ToString();
+				OperationArg2 = opModel.Args.Byte2.ToString();
+			}
+			if (opModel.OpType == OperationType.NoArgs) {
+				Index = opModel.Index.ToString();
+				OperationName = opModel.Operation.ToString();
+			}			
+		}
 
     #endregion //Constructors
 

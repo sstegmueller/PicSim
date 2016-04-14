@@ -12,6 +12,7 @@ namespace PicSim.Models {
     #region Fields
     
     private List<OperationModel> _operations = new List<OperationModel>();
+		private RamModel _ram;
 
     #endregion //Fields
 
@@ -77,7 +78,7 @@ namespace PicSim.Models {
       Operation[] sortedOpValues = SortEnumValues();
       foreach (KeyValuePair<int, int> opcode in opcodes) {
         ObjectifyOperation(sortedOpValues, opcode);
-        ObjectifyArgs(opcode);
+        ObjectifyArgs(opcode.Value);
       }
     }
 
@@ -106,7 +107,7 @@ namespace PicSim.Models {
       }
     }
 
-    private void ObjectifyArgs(KeyValuePair<int, int> opcode) {
+    private void ObjectifyArgs(int opcode) {
       OperationModel opModel = Operations.Last();
       if (TypeHasFlag(new TypeList(OperationType.ByteOrientedFD).OpsOfType, opModel.Operation)) {
         ParseFDArgs(opcode, opModel);
@@ -124,42 +125,46 @@ namespace PicSim.Models {
         ParseKArgs(opcode, opModel);
         return;
       }
-    }
+			if (TypeHasFlag(new TypeList(OperationType.NoArgs).OpsOfType, opModel.Operation)) {
+				opModel.OpType = OperationType.NoArgs;
+				return;
+			}
+		}
 
-    private void ParseFDArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
-      int intD = opcode.Value & Convert.ToInt32(0x0080);
+    private void ParseFDArgs(int opcode, OperationModel opModel) {
+      int intD = opcode & Convert.ToInt32(0x0080);
       BitArray byteD = new BitArray(new int[] { intD });
-      int f = opcode.Value & Convert.ToInt32(0x007F);
+      int f = opcode & Convert.ToInt32(0x007F);
       opModel.SetArgs(byteD[7], f);
 			opModel.OpType = OperationType.ByteOrientedFD;
     }
 
-    private void ParseFArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
-      int f = opcode.Value & Convert.ToInt32(0x007F);
+    private void ParseFArgs(int opcode, OperationModel opModel) {
+      int f = opcode & Convert.ToInt32(0x007F);
       opModel.SetArgs(f);
 			opModel.OpType = OperationType.ByteOrientedFD;
     }
 
-    private void ParseBFArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
-      int b = (opcode.Value & Convert.ToInt32(0x0380)) / 0x80;
-      int f = opcode.Value & Convert.ToInt32(0x007F);
+    private void ParseBFArgs(int opcode, OperationModel opModel) {
+      int b = (opcode & Convert.ToInt32(0x0380)) / 0x80;
+      int f = opcode & Convert.ToInt32(0x007F);
       opModel.SetArgs(b, f);
 			opModel.OpType = OperationType.BitOriented;
     }
 
-    private void ParseKArgs(KeyValuePair<int, int> opcode, OperationModel opModel) {
+    private void ParseKArgs(int opcode, OperationModel opModel) {
       int k;
       if (opModel.Operation == Operation.CALL || opModel.Operation == Operation.GOTO) {
-        k = opcode.Value & Convert.ToInt32(0x07FF);
+        k = opcode & Convert.ToInt32(0x07FF);
       }
       else {
-        k = opcode.Value & Convert.ToInt32(0x00FF);
+        k = opcode & Convert.ToInt32(0x00FF);
       }
       opModel.SetArgs(k);
 			opModel.OpType = OperationType.LiteralControl;
     }
 
-    public bool TypeHasFlag(List<Operation> ops, Operation op) {
+    private bool TypeHasFlag(List<Operation> ops, Operation op) {
       if (ops.Contains(op)) {
         return true;
       }
@@ -167,6 +172,10 @@ namespace PicSim.Models {
         return false;
       }
     }
+
+		public void StartProgram() {
+
+		}
 
     #endregion //Methods
 
