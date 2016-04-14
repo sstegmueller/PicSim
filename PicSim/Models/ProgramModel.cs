@@ -13,6 +13,7 @@ namespace PicSim.Models {
     
     private List<OperationModel> _operations = new List<OperationModel>();
 		private RamModel _ram;
+		private int _progCounter;
 
     #endregion //Fields
 
@@ -31,13 +32,24 @@ namespace PicSim.Models {
       }
     }
 
-    #endregion //Properties
+		public int ProgCounter {
+			get {
+				return _progCounter;
+			}
 
-    #region Constructors
+			set {
+				_progCounter = value;
+			}
+		}
 
-    public ProgramModel(string filePath) {
+		#endregion //Properties
+
+		#region Constructors
+
+		public ProgramModel(string filePath) {
       Dictionary<int, int> opcodes = ParseFile(filePath);
       ObjectifyOPCodes(opcodes);
+			ProgCounter = 0;
     }
 
     #endregion //Constructors
@@ -173,11 +185,266 @@ namespace PicSim.Models {
       }
     }
 
-		public void StartProgram() {
+		public void ExecuteCommand(int index) {
+			ChooseCommand(GetOpByIndex(index));
+		}
+
+		public OperationModel GetOpByIndex(int index) {
+			foreach (OperationModel opModel in Operations) {
+				if (index == opModel.Index) {
+					return opModel;
+				}
+			}
+			return null;
+		}
+
+		private void ChooseCommand(OperationModel opModel) {
+			switch (opModel.Operation) {
+				case Operation.ADDLW:
+
+					break;
+				case Operation.ADDWF:
+
+					break;
+				case Operation.ANDLW:
+
+					break;
+				case Operation.ANDWF:
+
+					break;
+				case Operation.BCF:
+
+					break;
+				case Operation.BSF:
+
+					break;
+				case Operation.BTFSC:
+
+					break;
+				case Operation.BTFSS:
+
+					break;
+				case Operation.CALL:
+
+					break;
+				case Operation.CLRF:
+
+					break;
+				case Operation.CLRW:
+
+					break;
+				case Operation.CLRWDT:
+
+					break;
+				case Operation.COMF:
+
+					break;
+				case Operation.DECF:
+
+					break;
+				case Operation.DECFSZ:
+
+					break;
+				case Operation.GOTO:
+					GOTOCommand(opModel);
+					break;
+				case Operation.INCF:
+
+					break;
+				case Operation.INCFSZ:
+
+					break;
+				case Operation.IORLW:
+
+					break;
+				case Operation.IORWF:
+
+					break;
+				case Operation.MOVF:
+
+					break;
+				case Operation.MOVLW:
+
+					break;
+				case Operation.MOVWF:
+
+					break;
+				case Operation.NOP:
+
+					break;
+				case Operation.RETFIE:
+
+					break;
+				case Operation.RETLW:
+
+					break;
+				case Operation.RETURN:
+
+					break;
+				case Operation.RLF:
+
+					break;
+				case Operation.RRF:
+
+					break;
+				case Operation.SLEEP:
+
+					break;
+				case Operation.SUBLW:
+
+					break;
+				case Operation.SUBWF:
+
+					break;
+				case Operation.SWAPF:
+
+					break;
+				case Operation.XORLW:
+
+					break;
+				case Operation.XORWF:
+
+					break;
+			}
+		}
+
+		private void ADDWFCommand() {
 
 		}
 
-    #endregion //Methods
+		private void ANDWFCommand() {
 
-  }
+		}
+
+		private void CLRFCommand() {
+
+		}
+
+		private void CLRWCommand() {
+
+		}
+
+		private void COMFCommand() {
+
+		}
+
+		private void DECFCommand() {
+
+		}
+
+		private void DECFSZCommand() {
+
+		}
+
+		private void INCFCommand() {
+
+		}
+
+		private void INCFSZCommand() {
+
+		}
+
+		private void IORWFCommand() {
+
+		}
+
+		private void MOVFCommand() {
+
+		}
+
+		private void NOPCommand() {
+
+		}
+
+		private void RLFCommand() {
+
+		}
+
+		private void RRFCommand() {
+
+		}
+
+		private void SUBWFCommand() {
+
+		}
+
+		private void SWAPFCommand() {
+
+		}
+
+		private void XORWFCommand() {
+
+		}
+
+		private void BCFCommand() {
+
+		}
+
+		private void BSFCommand() {
+
+		}
+
+		private void BTFSCCommand() {
+
+		}
+
+		private void BTFSSCommand() {
+
+		}
+
+		private void ADDLWCommand() {
+
+		}
+
+		private void ANDLWCommand() {
+
+		}
+
+		private void CALLCommand() {
+
+		}
+
+		private void CLRWDTCommand() {
+
+		}
+
+		private void GOTOCommand(OperationModel opModel) {
+			ProgCounter = opModel.Args.Byte1;
+		}
+
+		private void IORLWCommand() {
+
+		}
+
+		private void MOVLWCommand() {
+
+		}
+
+		private void RETFIECommand() {
+
+		}
+
+		private void RETLWCommand() {
+
+		}
+
+		private void RETURNCommand() {
+
+		}
+
+		private void SLEEPCommand() {
+
+		}
+
+		private void SUBLWCommand() {
+
+		}
+
+		private void XORLWCommand() {
+
+		}
+
+		#endregion //Methods
+
+	}
 }

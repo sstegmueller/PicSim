@@ -83,7 +83,6 @@
     <Compile Include="Models\ProgramModel.cs" />
     <Compile Include="Models\RamModel.cs" />
     <Compile Include="Operation.cs" />
-    <Compile Include="OperationLogic.cs" />
     <Compile Include="OperationType.cs" />
     <Compile Include="TypeList.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

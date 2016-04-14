@@ -238,6 +238,10 @@ namespace PicSim.ViewModels {
     }
 
 		public void Start() {
+			while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
+						!_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
+				_progModel.ExecuteCommand(_progModel.ProgCounter);
+			}
 		}
 
     #endregion //Methods
