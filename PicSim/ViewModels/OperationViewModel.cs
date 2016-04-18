@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using PicSim.Models;
+using System.Windows.Media;
 
 namespace PicSim.ViewModels {
   class OperationViewModel : PropertyChangedBase {
@@ -17,6 +18,7 @@ namespace PicSim.ViewModels {
     private string _operationArg1;
     private string _operationArg2;
 		private OperationModel _opModel;
+		private Brush _background;
 
     #endregion //Fields
 
@@ -98,27 +100,20 @@ namespace PicSim.ViewModels {
       }
     }
 
-    #endregion //Properties
+		public Brush Background {
+			get {
+				return _background;
+			}
 
-    #region Constructors
+			set {
+				_background = value;
+				NotifyOfPropertyChange(() => Background);
+			}
+		}
 
-    public OperationViewModel(string index, string opName) {
-      Index = index;
-      OperationName = opName;
-    }
+		#endregion //Properties
 
-    public OperationViewModel(string index, string opName, string arg) {
-      Index = index;
-      OperationName = opName;
-      OperationArg1 = arg;
-    }
-
-    public OperationViewModel(string index, string opName, string arg1, string arg2) {
-      Index = index;
-      OperationName = opName;
-      OperationArg1 = arg1;
-      OperationArg2 = arg2;
-    }
+		#region Constructors
 
 		public OperationViewModel(OperationModel opModel) {
 			_opModel = opModel;

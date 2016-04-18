@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using PicSim.Models;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace PicSim.ViewModels {
   class MainViewModel : Screen {
@@ -214,6 +215,23 @@ namespace PicSim.ViewModels {
       }
     }
 
+		private void UseCommand() {
+			_progModel.ExecuteCommand(_progModel.ProgCounter);
+			RamViewModel.RefreshDataTable(_progModel.Ram.RamArray);
+			BrushCurrentOp();
+		}
+
+		private void BrushCurrentOp() {
+			foreach(OperationViewModel op in Operations) {
+				if(Convert.ToInt32(op.Index, 16) == _progModel.ProgCounter) {
+					op.Background = Brushes.Tomato;
+				}
+				else {
+					op.Background = Brushes.White;
+				}
+			}
+		}
+
     public void OpenFile() {
       // Create OpenFileDialog 
       Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -246,8 +264,13 @@ namespace PicSim.ViewModels {
 		private void worker_DoWork(object sender, DoWorkEventArgs e) {
 			while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
 						!_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
-				_progModel.ExecuteCommand(_progModel.ProgCounter);
-				RamViewModel.RefreshDataTable(_progModel.Ram.RamArray);
+				UseCommand();
+			}
+		}
+
+		public void Step() {
+			if(_progModel.ProgCounter < _progModel.Operations.Last().Index) {
+				UseCommand();
 			}
 		}
 

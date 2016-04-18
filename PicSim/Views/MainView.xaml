@@ -29,7 +29,7 @@
             <Label x:Name="RamName"/>
             <ContentControl x:Name="RamViewModel"/>
         </StackPanel>
-        <DockPanel Grid.Column="1" Grid.Row="2" Height="auto" Width="auto" LastChildFill="True" Grid.ColumnSpan="2" Margin="0.2,0,348.6,0.4">
+        <DockPanel Grid.Column="1" Grid.Row="1" Height="auto" Width="auto" LastChildFill="True" Grid.RowSpan="2">
             <Grid DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
@@ -52,6 +52,10 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </DockPanel>
-        <Button x:Name="Start" Grid.Column="2" Grid.Row="2" Content="{Binding StartContent}"/>
+        <StackPanel Grid.Column="2" Grid.Row="2" VerticalAlignment="Bottom">
+            <Button x:Name="Start" Content="Start"/>
+            <Button x:Name="Step" Content="Step"/>
+            <Button x:Name="Stop" Content="Stop"/>
+        </StackPanel>        
     </Grid>
 </Window>
