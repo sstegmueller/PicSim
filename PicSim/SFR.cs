@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PicSim {
-	enum SpecialFunctionRegister {
+	enum SFR {
 		INDF				= 0x00,
 		TMR0				= 0x01,
 		PCL					= 0x02,

@@ -16,6 +16,5 @@
                 </DataTemplate>
             </DataGrid.RowHeaderTemplate>
         </DataGrid>
-
     </Grid>
 </UserControl>

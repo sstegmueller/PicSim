@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using PicSim.Models;
+using System.ComponentModel;
 
 namespace PicSim.ViewModels {
   class MainViewModel : Screen {
@@ -23,12 +24,13 @@ namespace PicSim.ViewModels {
     private BindableCollection<OperationViewModel> _operations;
     private RamViewModel _ramViewModel;
     private string _ramName;
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
 
-    #endregion //Fields
+		#endregion //Fields
 
-    #region Properties
+		#region Properties
 
-    public string OpenFileContent
+		public string OpenFileContent
     {
       get
       {
@@ -197,7 +199,6 @@ namespace PicSim.ViewModels {
       Operations = new BindableCollection<OperationViewModel>();
       RamViewModel = new RamViewModel();
       RamName = "RAM";
-      RamViewModel.SetRamField(0, 0, "test");
     }
 
     #endregion //Constructors
@@ -238,13 +239,19 @@ namespace PicSim.ViewModels {
     }
 
 		public void Start() {
+			_worker.DoWork += worker_DoWork;
+			_worker.RunWorkerAsync();			
+		}
+
+		private void worker_DoWork(object sender, DoWorkEventArgs e) {
 			while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
 						!_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
 				_progModel.ExecuteCommand(_progModel.ProgCounter);
+				RamViewModel.RefreshDataTable(_progModel.Ram.RamArray);
 			}
 		}
 
-    #endregion //Methods
+		#endregion //Methods
 
-  }
+	}
 }

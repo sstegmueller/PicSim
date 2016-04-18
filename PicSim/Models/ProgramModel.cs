@@ -42,6 +42,12 @@ namespace PicSim.Models {
 			}
 		}
 
+		public RamModel Ram {
+			get {
+				return _ram;
+			}
+		}
+
 		#endregion //Properties
 
 		#region Constructors
@@ -50,6 +56,7 @@ namespace PicSim.Models {
       Dictionary<int, int> opcodes = ParseFile(filePath);
       ObjectifyOPCodes(opcodes);
 			ProgCounter = 0;
+			_ram = new RamModel();
     }
 
     #endregion //Constructors
@@ -187,6 +194,8 @@ namespace PicSim.Models {
 
 		public void ExecuteCommand(int index) {
 			ChooseCommand(GetOpByIndex(index));
+			_progCounter++;
+			_ram.SetRegisterValue((int)SFR.PCL, _progCounter);
 		}
 
 		public OperationModel GetOpByIndex(int index) {

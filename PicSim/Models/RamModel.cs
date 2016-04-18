@@ -9,18 +9,15 @@ namespace PicSim.Models {
 
 		#region Fields
 
-		private byte[] _ram;
+		private byte[] _ramArray;
 
 		#endregion //Fields
 
 		#region Properties
-		public byte[] Ram {
+	
+		public byte[] RamArray {
 			get {
-				return _ram;
-			}
-
-			set {
-				_ram = value;
+				return _ramArray;
 			}
 		}
 
@@ -29,7 +26,7 @@ namespace PicSim.Models {
 		#region Constructors
 
 		public RamModel() {
-			Ram = new byte[0xFF];
+			_ramArray = new byte[0xFF];
 		}
 
 		#endregion //Constructors
@@ -37,19 +34,24 @@ namespace PicSim.Models {
 		#region Methods
 
 		public void SetRegisterValue(int adress, int value) {
-			Ram[adress] = Convert.ToByte(value);
+			_ramArray[adress] = Convert.ToByte(value);
 		}
 
 		public int GetRegisterValue(int adress) {
-			return Convert.ToInt32(Ram[adress]);
+			return Convert.ToInt32(_ramArray[adress]);
 		}
 
 		public void ToggleRegisterBit(int adress, int bit, bool set) {
-			if (set && bit < 8 && bit > -1) {
+			if(bit < 8 && bit > -1) {
 				byte mask = Convert.ToByte(0x01 << bit);
-				byte value = Ram[adress];
-				Ram[adress] = (byte)(value | mask);
-			}			
+				byte value = _ramArray[adress];
+				if (set) {					
+					_ramArray[adress] = (byte)(value | mask);
+				}
+				else {
+					_ramArray[adress] = (byte)(value & mask);
+				}
+			}					
 		}
 
 		#endregion //Methods
