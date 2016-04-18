@@ -35,7 +35,7 @@ namespace PicSim.ViewModels {
       {
         _isChecked = value;
         NotifyOfPropertyChange(() => IsChecked);
-				_opModel.IsBreak = !_opModel.IsBreak;
+				_opModel.IsBreak = value;
       }
     }
 
@@ -117,6 +117,7 @@ namespace PicSim.ViewModels {
 
 		public OperationViewModel(OperationModel opModel) {
 			_opModel = opModel;
+			IsChecked = false;
 			if (opModel.OpType == OperationType.ByteOrientedFD) {
 				Index = opModel.Index.ToString();
 				OperationName = opModel.Operation.ToString();

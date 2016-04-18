@@ -46,6 +46,9 @@ namespace PicSim.Models {
 			get {
 				return _ram;
 			}
+			set {
+				_ram = value;
+			}
 		}
 
 		#endregion //Properties
@@ -154,13 +157,15 @@ namespace PicSim.Models {
       int intD = opcode & Convert.ToInt32(0x0080);
       BitArray byteD = new BitArray(new int[] { intD });
       int f = opcode & Convert.ToInt32(0x007F);
+			f = CheckForFSR(f);
       opModel.SetArgs(byteD[7], f);
 			opModel.OpType = OperationType.ByteOrientedFD;
     }
 
     private void ParseFArgs(int opcode, OperationModel opModel) {
       int f = opcode & Convert.ToInt32(0x007F);
-      opModel.SetArgs(f);
+			f = CheckForFSR(f);
+			opModel.SetArgs(f);
 			opModel.OpType = OperationType.ByteOrientedFD;
     }
 
@@ -213,7 +218,7 @@ namespace PicSim.Models {
 
 					break;
 				case Operation.ADDWF:
-
+					ANDWFCommand(opModel);
 					break;
 				case Operation.ANDLW:
 
@@ -317,60 +322,151 @@ namespace PicSim.Models {
 			}
 		}
 
-		private void ADDWFCommand() {
+		private void ADDWFCommand(OperationModel opModel) {
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, Ram.GetRegisterValue() + Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit(opModel.Args.Byte2);
+			}
+			else {
+				Ram.SetRegisterValue(Ram.GetRegisterValue() + Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit();
+			}
+			CheckCarryBit(Ram.GetRegisterValue(), Ram.GetRegisterValue(opModel.Args.Byte2));
+			CheckDigitCarryBit(Ram.GetRegisterValue(), Ram.GetRegisterValue(opModel.Args.Byte2));		
+		}
+
+		private void ANDWFCommand(OperationModel opModel) {
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, Ram.GetRegisterValue() & Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit(opModel.Args.Byte2);
+			}
+			else {
+				Ram.SetRegisterValue(Ram.GetRegisterValue() & Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit();
+			}
+		}
+
+		private void CLRFCommand(OperationModel opModel) {
+			Ram.SetRegisterValue(opModel.Args.Byte2, 0);
+			CheckZeroBit(opModel.Args.Byte2);
+		}
+
+		private void CLRWCommand(OperationModel opModel) {
+			Ram.SetRegisterValue(0);
+			CheckZeroBit();
+		}
+
+		private void COMFCommand(OperationModel opModel) {
+			Ram.SetRegisterValue(opModel.Args.Byte2, ~Ram.GetRegisterValue(opModel.Args.Byte2));
+			CheckZeroBit(opModel.Args.Byte2);
+		}
+
+		private void DECFCommand(OperationModel opModel) {
+			int dec = Ram.GetRegisterValue(opModel.Args.Byte2) - 1;
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, dec);
+				CheckZeroBit(opModel.Args.Byte2);
+			}
+			else {
+				Ram.SetRegisterValue(dec);
+				CheckZeroBit();
+			}
+		}
+
+		private void DECFSZCommand(OperationModel opModel) {
+			DECFCommand(opModel);
+			if (Ram.GetRegisterBit((int)SFR.STATUS, 2)){
+				NOPCommand(opModel);
+				_progCounter++;
+			}
+		}
+
+		private void INCFCommand(OperationModel opModel) {
+			int inc = Ram.GetRegisterValue(opModel.Args.Byte2) + 1;
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, inc);
+				CheckZeroBit(opModel.Args.Byte2);
+			}
+			else {
+				Ram.SetRegisterValue(inc);
+				CheckZeroBit();
+			}
+		}
+
+		private void INCFSZCommand(OperationModel opModel) {
+			INCFCommand(opModel);
+			if (Ram.GetRegisterBit((int)SFR.STATUS, 2)) {
+				NOPCommand(opModel);
+				_progCounter++;
+			}
+		}
+
+		private void IORWFCommand(OperationModel opModel) {
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, Ram.GetRegisterValue() | Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit(opModel.Args.Byte2);
+			}
+			else {
+				Ram.SetRegisterValue(Ram.GetRegisterValue() | Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit();
+			}
+		}
+
+		private void MOVFCommand(OperationModel opModel) {
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit(opModel.Args.Byte2);
+			}
+			else {
+				Ram.SetRegisterValue(Ram.GetRegisterValue(opModel.Args.Byte2));
+				CheckZeroBit();
+			}
+		}
+
+		private void NOPCommand(OperationModel opModel) {
 
 		}
 
-		private void ANDWFCommand() {
-
+		private void RLFCommand(OperationModel opModel) {
+			bool msb = Ram.GetRegisterBit(opModel.Args.Byte2, 7);
+			bool carry = Ram.GetRegisterBit((int)SFR.STATUS, 0);
+			int shift = 2 * Ram.GetRegisterValue(opModel.Args.Byte2);
+			if (carry) {
+				shift++;
+			}
+			if (msb) {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 0, true);
+			}
+			else {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 0, false);
+			}
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, shift);
+			}
+			else {
+				Ram.SetRegisterValue(shift);
+			}
 		}
 
-		private void CLRFCommand() {
-
-		}
-
-		private void CLRWCommand() {
-
-		}
-
-		private void COMFCommand() {
-
-		}
-
-		private void DECFCommand() {
-
-		}
-
-		private void DECFSZCommand() {
-
-		}
-
-		private void INCFCommand() {
-
-		}
-
-		private void INCFSZCommand() {
-
-		}
-
-		private void IORWFCommand() {
-
-		}
-
-		private void MOVFCommand() {
-
-		}
-
-		private void NOPCommand() {
-
-		}
-
-		private void RLFCommand() {
-
-		}
-
-		private void RRFCommand() {
-
+		private void RRFCommand(OperationModel opModel) {
+			bool lsb = Ram.GetRegisterBit(opModel.Args.Byte2, 0);
+			bool carry = Ram.GetRegisterBit((int)SFR.STATUS, 0);
+			int shift = 2 / Ram.GetRegisterValue(opModel.Args.Byte2);
+			if (carry) {
+				shift += 255;
+			}
+			if (lsb) {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 0, true);
+			}
+			else {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 0, false);
+			}
+			if (opModel.Args.Bool1) {
+				Ram.SetRegisterValue(opModel.Args.Byte2, shift);
+			}
+			else {
+				Ram.SetRegisterValue(shift);
+			}
 		}
 
 		private void SUBWFCommand() {
@@ -451,6 +547,52 @@ namespace PicSim.Models {
 
 		private void XORLWCommand() {
 
+		}
+
+		private int CheckForFSR(int adress) {
+			int resultAdress = adress;
+			if(adress == 0) {
+				resultAdress = (int)SFR.FSR;
+			}
+			return resultAdress;
+		}
+		
+		private void CheckCarryBit(int byte1, int byte2) {
+			if(byte1 + byte2 > 255) {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 0, true);
+			}
+			else {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 0, false);
+			}
+		}
+
+		private void CheckDigitCarryBit(int byte1, int byte2) {
+			byte mask = Convert.ToByte(15);
+			byte lowValue1 = (byte)(mask & Convert.ToByte(byte1));
+			byte lowValue2 = (byte)(mask & Convert.ToByte(byte2));
+			if ((lowValue1 + lowValue2) > 15) {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 1, true);
+			}
+			else {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 1, false);
+			}
+		}
+
+		private void CheckZeroBit(int adress) {
+			if (Ram.GetRegisterValue(adress) == 0) {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 2, true);
+			}
+			else {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 2, false);
+			}
+		}
+		private void CheckZeroBit() {
+			if (Ram.GetRegisterValue() == 0) {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 2, true);
+			}
+			else {
+				Ram.ToggleRegisterBit((int)SFR.STATUS, 2, false);
+			}
 		}
 
 		#endregion //Methods

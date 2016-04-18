@@ -224,7 +224,7 @@ namespace PicSim.ViewModels {
 		private void BrushCurrentOp() {
 			foreach(OperationViewModel op in Operations) {
 				if(Convert.ToInt32(op.Index, 16) == _progModel.ProgCounter) {
-					op.Background = Brushes.Tomato;
+					op.Background = Brushes.Yellow;
 				}
 				else {
 					op.Background = Brushes.White;
@@ -262,6 +262,10 @@ namespace PicSim.ViewModels {
 		}
 
 		private void worker_DoWork(object sender, DoWorkEventArgs e) {
+			if (_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak &&
+				_progModel.ProgCounter < _progModel.Operations.Last().Index) {
+				UseCommand();
+			}
 			while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
 						!_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
 				UseCommand();
@@ -272,6 +276,13 @@ namespace PicSim.ViewModels {
 			if(_progModel.ProgCounter < _progModel.Operations.Last().Index) {
 				UseCommand();
 			}
+		}
+
+		public void Stop() {
+			_progModel.Ram = new RamModel();
+			RamViewModel = new RamViewModel();
+			_progModel.ProgCounter = 0;
+			BrushCurrentOp();			
 		}
 
 		#endregion //Methods
