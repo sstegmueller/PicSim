@@ -41,11 +41,11 @@ namespace PicSim.Models {
 		#region Methods
 
 		public void SetRegisterValue(int adress, int value) {
-			_ramArray[adress] = Convert.ToByte(value);
+			_ramArray[adress] = (byte)value;
 		}
 
 		public void SetRegisterValue(int value) {
-			wReg = Convert.ToByte(value);
+			wReg = (byte)value;
 		}
 
 		public int GetRegisterValue(int adress) {

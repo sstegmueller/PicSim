@@ -26,6 +26,7 @@ namespace PicSim.ViewModels {
     private RamViewModel _ramViewModel;
     private string _ramName;
 		private readonly BackgroundWorker _worker = new BackgroundWorker();
+    private bool _canStep;
 
 		#endregion //Fields
 
@@ -185,6 +186,17 @@ namespace PicSim.ViewModels {
       }
     }
 
+    public bool CanStep {
+      get {
+        return _canStep;
+      }
+
+      set {
+        _canStep = value;
+        NotifyOfPropertyChange(() => CanStep);
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
@@ -253,6 +265,7 @@ namespace PicSim.ViewModels {
         FileNameContent = dlg.SafeFileName;
         _progModel = new ProgramModel(dlg.FileName);
         ShowOperations();
+        CanStep = true;
       }      
     }
 

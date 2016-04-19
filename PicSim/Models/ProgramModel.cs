@@ -218,106 +218,106 @@ namespace PicSim.Models {
 
 					break;
 				case Operation.ADDWF:
-					ANDWFCommand(opModel);
+					ADDWFCommand(opModel);
 					break;
 				case Operation.ANDLW:
-
+          ANDLWCommand(opModel);
 					break;
 				case Operation.ANDWF:
-
+          ANDWFCommand(opModel);
 					break;
 				case Operation.BCF:
-
+          BCFCommand(opModel);
 					break;
 				case Operation.BSF:
-
-					break;
+          BSFCommand(opModel);
+          break;
 				case Operation.BTFSC:
-
-					break;
+          BTFSCCommand(opModel);
+          break;
 				case Operation.BTFSS:
-
-					break;
+          BTFSSCommand(opModel);
+          break;
 				case Operation.CALL:
-
-					break;
+          CALLCommand(opModel);
+          break;
 				case Operation.CLRF:
-
+          CLRFCommand(opModel);
 					break;
 				case Operation.CLRW:
-
+          CLRWCommand(opModel);
 					break;
 				case Operation.CLRWDT:
-
+          CLRWDTCommand(opModel);
 					break;
 				case Operation.COMF:
-
+          COMFCommand(opModel);
 					break;
 				case Operation.DECF:
-
+          DECFCommand(opModel);
 					break;
 				case Operation.DECFSZ:
-
+          DECFSZCommand(opModel);
 					break;
 				case Operation.GOTO:
 					GOTOCommand(opModel);
 					break;
 				case Operation.INCF:
-
+          INCFCommand(opModel);
 					break;
 				case Operation.INCFSZ:
-
+          INCFSZCommand(opModel);
 					break;
 				case Operation.IORLW:
-
+          IORLWCommand(opModel);
 					break;
 				case Operation.IORWF:
-
+          IORWFCommand(opModel);
 					break;
 				case Operation.MOVF:
-
+          MOVFCommand(opModel);
 					break;
 				case Operation.MOVLW:
-
+          MOVLWCommand(opModel);
 					break;
 				case Operation.MOVWF:
-
+          MOVWFCommand(opModel);
 					break;
 				case Operation.NOP:
-
+          NOPCommand(opModel);
 					break;
 				case Operation.RETFIE:
-
+          RETFIECommand(opModel);
 					break;
 				case Operation.RETLW:
-
+          RETLWCommand(opModel);
 					break;
 				case Operation.RETURN:
-
+          RETURNCommand(opModel);
 					break;
 				case Operation.RLF:
-
+          RLFCommand(opModel);
 					break;
 				case Operation.RRF:
-
+          RRFCommand(opModel);
 					break;
 				case Operation.SLEEP:
-
+          SLEEPCommand(opModel);
 					break;
 				case Operation.SUBLW:
-
+          SUBLWCommand(opModel);
 					break;
 				case Operation.SUBWF:
-
+          SUBWFCommand(opModel);
 					break;
 				case Operation.SWAPF:
-
+          SWAPFCommand(opModel);
 					break;
 				case Operation.XORLW:
-
+          XORLWCommand(opModel);
 					break;
 				case Operation.XORWF:
-
+          XORWFCommand(opModel);
 					break;
 			}
 		}
@@ -423,7 +423,10 @@ namespace PicSim.Models {
 			}
 		}
 
-		private void NOPCommand(OperationModel opModel) {
+    private void MOVWFCommand(OperationModel opModel) {
+    }
+
+    private void NOPCommand(OperationModel opModel) {
 
 		}
 
@@ -469,47 +472,47 @@ namespace PicSim.Models {
 			}
 		}
 
-		private void SUBWFCommand() {
+		private void SUBWFCommand(OperationModel opModel) {
 
 		}
 
-		private void SWAPFCommand() {
+		private void SWAPFCommand(OperationModel opModel) {
 
 		}
 
-		private void XORWFCommand() {
+		private void XORWFCommand(OperationModel opModel) {
 
 		}
 
-		private void BCFCommand() {
+		private void BCFCommand(OperationModel opModel) {
 
 		}
 
-		private void BSFCommand() {
+		private void BSFCommand(OperationModel opModel) {
 
 		}
 
-		private void BTFSCCommand() {
+		private void BTFSCCommand(OperationModel opModel) {
 
 		}
 
-		private void BTFSSCommand() {
+		private void BTFSSCommand(OperationModel opModel) {
 
 		}
 
-		private void ADDLWCommand() {
+		private void ADDLWCommand(OperationModel opModel) {
 
 		}
 
-		private void ANDLWCommand() {
+		private void ANDLWCommand(OperationModel opModel) {
 
 		}
 
-		private void CALLCommand() {
+		private void CALLCommand(OperationModel opModel) {
 
 		}
 
-		private void CLRWDTCommand() {
+		private void CLRWDTCommand(OperationModel opModel) {
 
 		}
 
@@ -517,39 +520,39 @@ namespace PicSim.Models {
 			ProgCounter = opModel.Args.Byte1;
 		}
 
-		private void IORLWCommand() {
+		private void IORLWCommand(OperationModel opModel) {
 
 		}
 
-		private void MOVLWCommand() {
+		private void MOVLWCommand(OperationModel opModel) {
 
 		}
 
-		private void RETFIECommand() {
+		private void RETFIECommand(OperationModel opModel) {
 
 		}
 
-		private void RETLWCommand() {
+		private void RETLWCommand(OperationModel opModel) {
 
 		}
 
-		private void RETURNCommand() {
+		private void RETURNCommand(OperationModel opModel) {
 
 		}
 
-		private void SLEEPCommand() {
+		private void SLEEPCommand(OperationModel opModel) {
 
 		}
 
-		private void SUBLWCommand() {
+		private void SUBLWCommand(OperationModel opModel) {
 
 		}
 
-		private void XORLWCommand() {
+		private void XORLWCommand(OperationModel opModel) {
 
 		}
 
-		private int CheckForFSR(int adress) {
+    private int CheckForFSR(int adress) {
 			int resultAdress = adress;
 			if(adress == 0) {
 				resultAdress = (int)SFR.FSR;
