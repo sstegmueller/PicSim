@@ -236,7 +236,7 @@ namespace PicSim.ViewModels {
 		private void BrushCurrentOp() {
 			foreach(OperationViewModel op in Operations) {
 				if(Convert.ToInt32(op.Index, 16) == _progModel.ProgCounter) {
-					op.Background = Brushes.Yellow;
+					op.Background = Brushes.LightBlue;
 				}
 				else {
 					op.Background = Brushes.White;

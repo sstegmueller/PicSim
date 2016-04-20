@@ -16,20 +16,20 @@
             <ColumnDefinition Width="349*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height=".1*"/>
+            <RowDefinition Height=".025*"/>
             <RowDefinition Height=".4*"/>
             <RowDefinition Height=".4*"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,1.8,342" Grid.RowSpan="2">
             <WrapPanel>
                 <Button x:Name="OpenFile" Grid.Row="0" Grid.Column="0" Content="{Binding OpenFileContent}"/>
-                <Label x:Name="FileName" Grid.Row="0" Grid.Column="0" Content="{Binding FileNameContent}"/>
+                <Label x:Name="FileName" Grid.Row="0" Grid.Column="0" Content="{Binding FileNameContent}" FontWeight="SemiBold"/>
             </WrapPanel>
         </StackPanel>
-        <StackPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
-            <Label x:Name="RamName"/>
+        <DockPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+            <Label x:Name="RamName" DockPanel.Dock="Top" FontWeight="DemiBold"/>
             <ContentControl x:Name="RamViewModel"/>
-        </StackPanel>
+        </DockPanel>
         <DockPanel Grid.Column="1" Grid.Row="1" Height="auto" Width="auto" LastChildFill="True" Grid.RowSpan="2">
             <Grid DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
@@ -39,11 +39,11 @@
                     <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="80"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="OperationIndex" Grid.Column="0" HorizontalAlignment="Left"/>
-                <Label x:Name="OperationBreak" Grid.Column="1" HorizontalAlignment="Left"/>
-                <Label x:Name="OperationName" Grid.Column="2" HorizontalAlignment="Left"/>
-                <Label x:Name="OperationArg1" Grid.Column="3" HorizontalAlignment="Left"/>
-                <Label x:Name="OperationArg2" Grid.Column="4" HorizontalAlignment="Left"/>
+                <Label x:Name="OperationIndex" Grid.Column="0" HorizontalAlignment="Left" FontWeight="DemiBold"/>
+                <Label x:Name="OperationBreak" Grid.Column="1" HorizontalAlignment="Left" FontWeight="DemiBold"/>
+                <Label x:Name="OperationName" Grid.Column="2" HorizontalAlignment="Left" FontWeight="DemiBold"/>
+                <Label x:Name="OperationArg1" Grid.Column="3" HorizontalAlignment="Left" FontWeight="DemiBold"/>
+                <Label x:Name="OperationArg2" Grid.Column="4" HorizontalAlignment="Left" FontWeight="DemiBold"/>
             </Grid>
             <ListBox x:Name="Operations" ItemsSource="{Binding Operations}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <ListBox.ItemTemplate>
