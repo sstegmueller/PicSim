@@ -23,7 +23,8 @@ namespace PicSim.ViewModels {
     private string _operationArg2;
     private ProgramModel _progModel;
     private BindableCollection<OperationViewModel> _operations;
-    private RamViewModel _ramViewModel;
+    private RamViewModel _ramVM;
+    private SfrViewModel _sFRVM;
     private string _ramName;
 		private readonly BackgroundWorker _worker = new BackgroundWorker();
     private bool _canStep;
@@ -158,17 +159,17 @@ namespace PicSim.ViewModels {
       }
     }
 
-    public RamViewModel RamViewModel
+    public RamViewModel RamVM
     {
       get
       {
-        return _ramViewModel;
+        return _ramVM;
       }
 
       set
       {
-        _ramViewModel = value;
-        NotifyOfPropertyChange(() => RamViewModel);
+        _ramVM = value;
+        NotifyOfPropertyChange(() => RamVM);
       }
     }
 
@@ -197,6 +198,17 @@ namespace PicSim.ViewModels {
       }
     }
 
+    internal SfrViewModel SFRVM {
+      get {
+        return _sFRVM;
+      }
+
+      set {
+        _sFRVM = value;
+        NotifyOfPropertyChange(() => SFRVM);
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
@@ -204,14 +216,17 @@ namespace PicSim.ViewModels {
     public MainViewModel() {
       WindowTitle = "PicSim";
       OpenFileContent = "Open File";
+      RamName = "RAM";
       OperationIndex = "Index";
       OperationBreak = "Breakpoint";
       OperationName = "Operation";  
       OperationArg1 = "Argument 1";
       OperationArg2 = "Argument 2";
       Operations = new BindableCollection<OperationViewModel>();
-      RamViewModel = new RamViewModel();
-      RamName = "RAM";
+      RamVM = new RamViewModel();
+      SFRVM = new SfrViewModel();
+      _worker.DoWork += worker_DoWork;
+      _worker.WorkerSupportsCancellation = true;
     }
 
     #endregion //Constructors
@@ -229,7 +244,7 @@ namespace PicSim.ViewModels {
 
 		private void UseCommand() {
 			_progModel.ExecuteCommand(_progModel.ProgCounter);
-			RamViewModel.RefreshDataTable(_progModel.Ram.RamArray);
+			RamVM.RefreshDataTable(_progModel.Ram.RamArray);
 			BrushCurrentOp();
 		}
 
@@ -270,7 +285,6 @@ namespace PicSim.ViewModels {
     }
 
 		public void Start() {
-			_worker.DoWork += worker_DoWork;
 			_worker.RunWorkerAsync();			
 		}
 
@@ -293,7 +307,7 @@ namespace PicSim.ViewModels {
 
 		public void Stop() {
 			_progModel.Ram = new RamModel();
-			RamViewModel = new RamViewModel();
+			RamVM = new RamViewModel();
 			_progModel.ProgCounter = 0;
 			BrushCurrentOp();			
 		}

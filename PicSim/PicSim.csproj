@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -94,6 +95,7 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\OperationViewModel.cs" />
     <Compile Include="ViewModels\RamViewModel.cs" />
+    <Compile Include="ViewModels\SfrViewModel.cs" />
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -102,6 +104,9 @@
     </Compile>
     <Compile Include="Views\RamView.xaml.cs">
       <DependentUpon>RamView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SfrView.xaml.cs">
+      <DependentUpon>SfrView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RamView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SfrView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

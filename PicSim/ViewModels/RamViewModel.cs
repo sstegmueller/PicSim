@@ -62,7 +62,7 @@ namespace PicSim.ViewModels {
             dr[col] = ActionHelper.ToHexString(rowHeaderIndex);
           }
           else {
-            dr[col] = "00";
+            dr[col] = "0";
           }
         }
         Ram.Rows.Add(dr);

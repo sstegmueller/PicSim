@@ -12,12 +12,6 @@
                   ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible"
                   Style="{StaticResource AzureDataGrid}" CanUserResizeColumns="False"
                   CanUserReorderColumns="False">
-            <DataGrid.RowHeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding RowHeaders, 
-                                        RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
-                </DataTemplate>
-            </DataGrid.RowHeaderTemplate>
         </DataGrid>
     </Grid>
 </UserControl>
