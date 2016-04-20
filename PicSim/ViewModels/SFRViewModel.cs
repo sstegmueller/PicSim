@@ -100,11 +100,12 @@ namespace PicSim.ViewModels {
 
     #region Methods
 
-    public void RefreshSfr(RamModel ram) {
+    public void RefreshSfr(RamModel ram, int pc) {
       WRegValue = ActionHelper.ToHexString(ram.WReg);
       FSRValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.FSR]);
       PCLValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.PCL]);
       PCLATHValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.PCLATH]);
+      PCValue = ActionHelper.ToHexString(pc);
       StatusValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.STATUS]);
     }
 

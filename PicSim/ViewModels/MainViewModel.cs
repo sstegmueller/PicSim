@@ -246,7 +246,7 @@ namespace PicSim.ViewModels {
 			_progModel.ExecuteCommand(_progModel.ProgCounter);
 			RamVM.RefreshDataTable(_progModel.Ram.RamArray);
 			BrushCurrentOp();
-      SfrVM.RefreshSfr(_progModel.Ram);
+      SfrVM.RefreshSfr(_progModel.Ram, _progModel.ProgCounter);
 		}
 
 		private void BrushCurrentOp() {
