@@ -11,12 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MahApps.Metro.Controls;
 
 namespace PicSim.Views {
   /// <summary>
   /// Interaction logic for MainView.xaml
   /// </summary>
-  public partial class MainView : Window {
+  public partial class MainView : MetroWindow {
     public MainView() {
       InitializeComponent();
     }
