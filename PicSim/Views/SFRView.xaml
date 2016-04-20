@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
-        <Label x:Name="SFR" DockPanel.Dock="Top" Content="SFR"/>
+        <Label x:Name="SFR" DockPanel.Dock="Top" Content="Special Function Registers" FontWeight="DemiBold"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width=".5*"/>

@@ -58,6 +58,6 @@
             <Button x:Name="Step" Content="Step" IsEnabled="{Binding CanStep}"/>
             <Button x:Name="Stop" Content="Stop" IsEnabled="{Binding CanStep}"/>
         </StackPanel>
-        <ContentControl x:Name="SFRVM" Content="{Binding SFRVM}" Grid.Column="2" Grid.Row="1"/>
+        <ContentControl x:Name="SfrVM" Content="{Binding SFRVM}" Grid.Column="2" Grid.Row="1"/>
     </Grid>
 </Controls:MetroWindow>

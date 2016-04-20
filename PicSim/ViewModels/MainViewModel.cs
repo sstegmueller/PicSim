@@ -198,14 +198,14 @@ namespace PicSim.ViewModels {
       }
     }
 
-    internal SfrViewModel SFRVM {
+    public SfrViewModel SfrVM {
       get {
         return _sFRVM;
       }
 
       set {
         _sFRVM = value;
-        NotifyOfPropertyChange(() => SFRVM);
+        NotifyOfPropertyChange(() => SfrVM);
       }
     }
 
@@ -224,7 +224,7 @@ namespace PicSim.ViewModels {
       OperationArg2 = "Argument 2";
       Operations = new BindableCollection<OperationViewModel>();
       RamVM = new RamViewModel();
-      SFRVM = new SfrViewModel();
+      SfrVM = new SfrViewModel();
       _worker.DoWork += worker_DoWork;
       _worker.WorkerSupportsCancellation = true;
     }
@@ -246,6 +246,7 @@ namespace PicSim.ViewModels {
 			_progModel.ExecuteCommand(_progModel.ProgCounter);
 			RamVM.RefreshDataTable(_progModel.Ram.RamArray);
 			BrushCurrentOp();
+      SfrVM.RefreshSfr(_progModel.Ram);
 		}
 
 		private void BrushCurrentOp() {

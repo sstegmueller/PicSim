@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using PicSim.Models;
 
 namespace PicSim.ViewModels {
   class SfrViewModel : PropertyChangedBase {
@@ -12,6 +13,7 @@ namespace PicSim.ViewModels {
 
     private string _wRegValue;
     private string _fSRValue;
+    private string _pCLValue;
     private string _pCLATHValue;
     private string _pCValue;
     private string _statusValue;
@@ -75,6 +77,17 @@ namespace PicSim.ViewModels {
       }
     }
 
+    public string PCLValue {
+      get {
+        return _pCLValue;
+      }
+
+      set {
+        _pCLValue = value;
+        NotifyOfPropertyChange(() => PCLValue);
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
@@ -86,6 +99,14 @@ namespace PicSim.ViewModels {
     #endregion //Constructors
 
     #region Methods
+
+    public void RefreshSfr(RamModel ram) {
+      WRegValue = ActionHelper.ToHexString(ram.WReg);
+      FSRValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.FSR]);
+      PCLValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.PCL]);
+      PCLATHValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.PCLATH]);
+      StatusValue = ActionHelper.ToHexString(ram.RamArray[(int)SFR.STATUS]);
+    }
 
     #endregion //Methods
   }
