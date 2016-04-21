@@ -284,7 +284,7 @@ namespace PicSim.Models {
           MOVWFCommand(opModel);
 					break;
 				case Operation.NOP:
-          NOPCommand(opModel);
+          NOPCommand();
 					break;
 				case Operation.RETFIE:
           RETFIECommand(opModel);
@@ -376,7 +376,7 @@ namespace PicSim.Models {
 		private void DECFSZCommand(OperationModel opModel) {
 			DECFCommand(opModel);
 			if (Ram.GetRegisterBit((int)SFR.STATUS, 2)){
-				NOPCommand(opModel);
+				NOPCommand();
 				_progCounter++;
 			}
 		}
@@ -396,7 +396,7 @@ namespace PicSim.Models {
 		private void INCFSZCommand(OperationModel opModel) {
 			INCFCommand(opModel);
 			if (Ram.GetRegisterBit((int)SFR.STATUS, 2)) {
-				NOPCommand(opModel);
+				NOPCommand();
 				_progCounter++;
 			}
 		}
@@ -424,9 +424,10 @@ namespace PicSim.Models {
 		}
 
     private void MOVWFCommand(OperationModel opModel) {
+      Ram.SetRegisterValue(opModel.Args.Byte2, Ram.GetRegisterValue());
     }
 
-    private void NOPCommand(OperationModel opModel) {
+    private void NOPCommand() {
 
 		}
 
@@ -473,40 +474,82 @@ namespace PicSim.Models {
 		}
 
 		private void SUBWFCommand(OperationModel opModel) {
+      int sub = Ram.GetRegisterValue(opModel.Args.Byte2) - Ram.GetRegisterValue();
+      if (opModel.Args.Bool1) {
+        Ram.SetRegisterValue(opModel.Args.Byte2, sub);
+        CheckZeroBit(opModel.Args.Byte2);
 
-		}
-
+        //TODO Check Charry / CheckDigitCarry
+      }
+      else {
+        Ram.SetRegisterValue(sub);
+        CheckZeroBit();
+        //TODO Check Charry / CheckDigitCarry
+      }
+    }
+  
 		private void SWAPFCommand(OperationModel opModel) {
-
-		}
+      int byteVal = Ram.GetRegisterValue(opModel.Args.Byte2);
+      byte lowNibble = (byte)(byteVal & 0x0F);
+      byte highNibble = (byte)((byteVal & 0xF0) >> 4);
+      int switchedByte = lowNibble | highNibble;
+      if (opModel.Args.Bool1) {
+        Ram.SetRegisterValue(opModel.Args.Byte2, switchedByte);
+      }
+      else {
+        Ram.SetRegisterValue(switchedByte);
+      }
+    }
 
 		private void XORWFCommand(OperationModel opModel) {
-
-		}
+      int xorVal = Ram.GetRegisterValue(opModel.Args.Byte2) ^ Ram.GetRegisterValue();
+      if (opModel.Args.Bool1) {
+        Ram.SetRegisterValue(opModel.Args.Byte2, xorVal);
+        CheckZeroBit(Ram.GetRegisterValue(opModel.Args.Byte2));
+      }
+      else {
+        Ram.SetRegisterValue(xorVal);
+        CheckZeroBit(Ram.GetRegisterValue());
+      }
+    }
 
 		private void BCFCommand(OperationModel opModel) {
-
+      Ram.ToggleRegisterBit(opModel.Args.Byte2, opModel.Args.Byte1, false);
 		}
 
 		private void BSFCommand(OperationModel opModel) {
-
-		}
+      Ram.ToggleRegisterBit(opModel.Args.Byte2, opModel.Args.Byte1, true);
+    }
 
 		private void BTFSCCommand(OperationModel opModel) {
-
+      if (!Ram.GetRegisterBit(opModel.Args.Byte2, opModel.Args.Byte1)) {
+        NOPCommand();
+        ProgCounter++;
+      }
 		}
 
 		private void BTFSSCommand(OperationModel opModel) {
-
-		}
+      if (Ram.GetRegisterBit(opModel.Args.Byte2, opModel.Args.Byte1)) {
+        NOPCommand();
+        ProgCounter++;
+      }
+    }
 
 		private void ADDLWCommand(OperationModel opModel) {
-
+      int literal = opModel.Args.Byte1;
+      int wValue = Ram.GetRegisterValue();
+      CheckCarryBit(literal, wValue);
+      CheckDigitCarryBit(literal, wValue);
+      Ram.SetRegisterValue(literal + wValue);
+      CheckZeroBit();
 		}
 
 		private void ANDLWCommand(OperationModel opModel) {
-
-		}
+      int literal = opModel.Args.Byte1;
+      int wValue = Ram.GetRegisterValue();
+      Ram.SetRegisterValue(literal & wValue);
+      CheckZeroBit();
+    }
 
 		private void CALLCommand(OperationModel opModel) {
 
