@@ -14,8 +14,8 @@ namespace PicSim.Models {
     private List<OperationModel> _operations = new List<OperationModel>();
 		private RamModel _ram;
 		private int _progCounter;
-    private int _watchdog;
-    private int _prescaler;
+    private int _cycles = 0;
+    private int _timer = 0;
 
     #endregion //Fields
 
@@ -53,11 +53,48 @@ namespace PicSim.Models {
 			}
 		}
 
-		#endregion //Properties
+    private int Timer
+    {
+      get
+      {
+        return _timer;
+      }
 
-		#region Constructors
+      set
+      {
+        _timer = value;
+        if(!Ram.GetRegisterBit((int)SFR.OPTION_REG, 3) && (_timer > 255 * CalcPrescaler())) {
+          Ram.ToggleRegisterBit((int)SFR.INTCON, 2, true);
+          _timer = 0;
+        }
+        else if(_timer > 255){
+          Ram.ToggleRegisterBit((int)SFR.INTCON, 2, true);
+          _timer = 0;
+        }
+      }
+    }
 
-		public ProgramModel(string filePath) {
+    public int Cycles
+    {
+      get
+      {
+        return _cycles;
+      }
+
+      set
+      {
+        _cycles = value;
+        if (Ram.GetRegisterBit((int)SFR.INTCON, 5)) {
+          Timer = value;
+        }
+      }
+    }
+
+    #endregion //Properties
+
+    #region Constructors
+
+    public ProgramModel(string filePath) {
       Dictionary<int, int> opcodes = ParseFile(filePath);
       ObjectifyOPCodes(opcodes);
 			ProgCounter = 0;
@@ -200,12 +237,53 @@ namespace PicSim.Models {
     }
 
 		public void ExecuteCommand(int index) {
-			ChooseCommand(GetOpByIndex(index));
-			_progCounter++;
+      OperationModel op = GetOpByIndex(index);
+      CheckInterrupt();
+			ChooseCommand(op);
+      _progCounter++;
+      Cycles++;
 			_ram.SetRegisterValue((int)SFR.PCL, _progCounter);
 		}
 
-		public OperationModel GetOpByIndex(int index) {
+    private void CheckInterrupt() {
+      bool GIE = Ram.GetRegisterBit((int)SFR.INTCON, 7);
+      bool EEIE = Ram.GetRegisterBit((int)SFR.INTCON, 6);
+      bool T0IE = Ram.GetRegisterBit((int)SFR.INTCON, 5);
+      bool INTE = Ram.GetRegisterBit((int)SFR.INTCON, 4);
+      bool RBIE = Ram.GetRegisterBit((int)SFR.INTCON, 3);
+      bool T0IF = Ram.GetRegisterBit((int)SFR.INTCON, 2);
+      bool INTF = Ram.GetRegisterBit((int)SFR.INTCON, 1);
+      bool RBIF = Ram.GetRegisterBit((int)SFR.INTCON, 0);
+      bool EEIF = Ram.GetRegisterBit((int)SFR.EECON1, 4);
+      if (GIE) {
+        if (T0IE && T0IF) {
+          ExecuteInterrupt();
+        }
+        if (INTE && INTF) {
+          ExecuteInterrupt();
+        }
+        if (EEIE && EEIF) {
+          ExecuteInterrupt();
+        }
+        if (RBIE && RBIF) {
+          ExecuteInterrupt();
+        }
+      }      
+    }
+    
+    private void ExecuteInterrupt() {
+      Ram.ToggleRegisterBit((int)SFR.INTCON, 7, false);
+      Ram.PushStack(ProgCounter);
+      ProgCounter = 0x04;
+    }
+
+    private int CalcPrescaler() {
+      int mask = 0x07;
+      int prescaleValue = Ram.GetRegisterValue((int)SFR.OPTION_REG) & mask;
+      return 2 ^ (prescaleValue + 1);
+    }
+
+    public OperationModel GetOpByIndex(int index) {
 			foreach (OperationModel opModel in Operations) {
 				if (index == opModel.Index) {
 					return opModel;
@@ -430,7 +508,7 @@ namespace PicSim.Models {
     }
 
     private void NOPCommand() {
-
+      Cycles++;
 		}
 
 		private void RLFCommand(OperationModel opModel) {
@@ -558,6 +636,7 @@ namespace PicSim.Models {
       Ram.PushStack(ProgCounter + 1);
       ProgCounter = opModel.Args.Byte1;
       //TODO: PCLATH logic
+      Cycles++;
 		}
 
 		private void CLRWDTCommand(OperationModel opModel) {
@@ -567,6 +646,7 @@ namespace PicSim.Models {
 		private void GOTOCommand(OperationModel opModel) {
 			ProgCounter = opModel.Args.Byte1;
       //TODO: PCLATH logic
+      Cycles++;
 		}
 
 		private void IORLWCommand(OperationModel opModel) {
@@ -584,15 +664,18 @@ namespace PicSim.Models {
 		private void RETFIECommand(OperationModel opModel) {
       ProgCounter = Ram.PopStack();
       Ram.ToggleRegisterBit((int)SFR.INTCON, 7, true);
+      Cycles++;
 		}
 
 		private void RETLWCommand(OperationModel opModel) {
       Ram.SetRegisterValue(opModel.Args.Byte1);
       ProgCounter = Ram.PopStack();
+      Cycles++;
 		}
 
 		private void RETURNCommand(OperationModel opModel) {
       ProgCounter = Ram.PopStack();
+      Cycles++;
     }
 
 		private void SLEEPCommand(OperationModel opModel) {
@@ -656,6 +739,7 @@ namespace PicSim.Models {
 				Ram.ToggleRegisterBit((int)SFR.STATUS, 2, false);
 			}
 		}
+
 		private void CheckZeroBit() {
 			if (Ram.GetRegisterValue() == 0) {
 				Ram.ToggleRegisterBit((int)SFR.STATUS, 2, true);
