@@ -10,7 +10,8 @@ namespace PicSim.Models {
 		#region Fields
 
 		private byte[] _ramArray;
-		private byte wReg;
+		private byte _wReg;
+    private Stack<int> _stack;
 
 		#endregion //Fields
 
@@ -24,7 +25,7 @@ namespace PicSim.Models {
 
 		public byte WReg {
 			get {
-				return wReg;
+				return _wReg;
 			}
 		}
 
@@ -45,7 +46,7 @@ namespace PicSim.Models {
 		}
 
 		public void SetRegisterValue(int value) {
-			wReg = (byte)value;
+			_wReg = (byte)value;
 		}
 
 		public int GetRegisterValue(int adress) {
@@ -53,7 +54,7 @@ namespace PicSim.Models {
 		}
 
 		public int GetRegisterValue() {
-			return Convert.ToInt32(wReg);
+			return Convert.ToInt32(_wReg);
 		}
 
 		public void ToggleRegisterBit(int adress, int bit, bool set) {
@@ -75,6 +76,14 @@ namespace PicSim.Models {
 			}
 			return false;
 		}
+
+    public void PushStack(int adress) {
+      _stack.Push(adress);
+    }
+
+    public int PopStack() {
+      return _stack.Pop();
+    }
 
 		#endregion //Methods
 	}

@@ -14,6 +14,8 @@ namespace PicSim.Models {
     private List<OperationModel> _operations = new List<OperationModel>();
 		private RamModel _ram;
 		private int _progCounter;
+    private int _watchdog;
+    private int _prescaler;
 
     #endregion //Fields
 
@@ -474,17 +476,18 @@ namespace PicSim.Models {
 		}
 
 		private void SUBWFCommand(OperationModel opModel) {
-      int sub = Ram.GetRegisterValue(opModel.Args.Byte2) - Ram.GetRegisterValue();
+      int f = Ram.GetRegisterValue(opModel.Args.Byte2);
+      int sub = (byte)(Ram.GetRegisterValue() + 128);
+      int subtraction = f + sub;
+      CheckCarryBit(f, sub);
+      CheckDigitCarryBit(f, sub);
       if (opModel.Args.Bool1) {
-        Ram.SetRegisterValue(opModel.Args.Byte2, sub);
+        Ram.SetRegisterValue(opModel.Args.Byte2, subtraction);
         CheckZeroBit(opModel.Args.Byte2);
-
-        //TODO Check Charry / CheckDigitCarry
       }
       else {
-        Ram.SetRegisterValue(sub);
+        Ram.SetRegisterValue(subtraction);
         CheckZeroBit();
-        //TODO Check Charry / CheckDigitCarry
       }
     }
   
@@ -552,47 +555,68 @@ namespace PicSim.Models {
     }
 
 		private void CALLCommand(OperationModel opModel) {
-
+      Ram.PushStack(ProgCounter + 1);
+      ProgCounter = opModel.Args.Byte1;
+      //TODO: PCLATH logic
 		}
 
 		private void CLRWDTCommand(OperationModel opModel) {
-
+      //TODO: Watchdog timer logic
 		}
 
 		private void GOTOCommand(OperationModel opModel) {
 			ProgCounter = opModel.Args.Byte1;
+      //TODO: PCLATH logic
 		}
 
 		private void IORLWCommand(OperationModel opModel) {
-
-		}
+      int literal = opModel.Args.Byte1;
+      int wValue = Ram.GetRegisterValue();
+      Ram.SetRegisterValue(literal | wValue);
+      CheckZeroBit();
+    }
 
 		private void MOVLWCommand(OperationModel opModel) {
-
-		}
+      int literal = opModel.Args.Byte1;
+      Ram.SetRegisterValue(literal);
+    }
 
 		private void RETFIECommand(OperationModel opModel) {
-
+      ProgCounter = Ram.PopStack();
+      Ram.ToggleRegisterBit((int)SFR.INTCON, 7, true);
 		}
 
 		private void RETLWCommand(OperationModel opModel) {
-
+      Ram.SetRegisterValue(opModel.Args.Byte1);
+      ProgCounter = Ram.PopStack();
 		}
 
 		private void RETURNCommand(OperationModel opModel) {
-
-		}
+      ProgCounter = Ram.PopStack();
+    }
 
 		private void SLEEPCommand(OperationModel opModel) {
-
-		}
+      Ram.ToggleRegisterBit((int)SFR.STATUS, 3, false);
+      Ram.ToggleRegisterBit((int)SFR.STATUS, 4, true);
+      _watchdog = 0;
+      _prescaler = 0;
+      //TODO: Put into sleep mode
+    }
 
 		private void SUBLWCommand(OperationModel opModel) {
-
+      int literal = Ram.GetRegisterValue(opModel.Args.Byte2);
+      int sub = (byte)(Ram.GetRegisterValue() + 128);
+      int subtraction = literal + sub;
+      CheckCarryBit(literal, sub);
+      CheckDigitCarryBit(literal, sub);
+      Ram.SetRegisterValue(subtraction);
+      CheckZeroBit();
 		}
 
 		private void XORLWCommand(OperationModel opModel) {
-
+      int literal = Ram.GetRegisterValue(opModel.Args.Byte2);
+      Ram.SetRegisterValue(literal ^ Ram.GetRegisterValue());
+      CheckZeroBit();
 		}
 
     private int CheckForFSR(int adress) {
