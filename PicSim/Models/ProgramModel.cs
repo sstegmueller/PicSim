@@ -84,9 +84,7 @@ namespace PicSim.Models {
       set
       {
         _cycles = value;
-        if (Ram.GetRegisterBit((int)SFR.INTCON, 5)) {
           Timer = value;
-        }
       }
     }
 
@@ -264,6 +262,7 @@ namespace PicSim.Models {
         }
         if (EEIE && EEIF) {
           ExecuteInterrupt();
+          //TODO: EEPROM implementation
         }
         if (RBIE && RBIF) {
           ExecuteInterrupt();
