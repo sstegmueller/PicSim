@@ -198,9 +198,14 @@ namespace PicSim.ViewModels {
 
     private void UseCommand() {
       _progModel.ExecuteCommand(_progModel.ProgCounter);
-      RamVM.RefreshDataTable(_progModel.Ram.RamArray);
       BrushCurrentOp();
+      RefreshVMs();
+    }
+
+    private void RefreshVMs() {
+      RamVM.RefreshDataTable(_progModel.Ram.RamArray);
       SfrVM.RefreshSfr(_progModel.Ram, _progModel.ProgCounter);
+      SfrVM.RefreshDataTable(_progModel.Ram);
     }
 
     private void BrushCurrentOp() {
@@ -265,6 +270,7 @@ namespace PicSim.ViewModels {
       RamVM = new RamViewModel();
       _progModel.ProgCounter = 0;
       BrushCurrentOp();
+      RefreshVMs();
     }
     #endregion //Methods
   }

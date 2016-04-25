@@ -63,7 +63,7 @@ namespace PicSim.ViewModels {
       set
       {
         if (value != "True" && value != "False") {
-          _operationArg1 = ActionHelper.ToHexString(value);
+          _operationArg1 = Tools.ToHexString(value);
         }
         else {
           _operationArg1 = value;
@@ -81,7 +81,7 @@ namespace PicSim.ViewModels {
 
       set
       {
-        _operationArg2 = ActionHelper.ToHexString(value);
+        _operationArg2 = Tools.ToHexString(value);
         NotifyOfPropertyChange(() => OperationArg2);
       }
     }
@@ -95,7 +95,7 @@ namespace PicSim.ViewModels {
 
       set
       {
-        _index = ActionHelper.ToHexString(value);
+        _index = Tools.ToHexString(value);
         NotifyOfPropertyChange(() => Index);
       }
     }

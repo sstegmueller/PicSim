@@ -84,7 +84,7 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="Arguments.cs" />
-    <Compile Include="ActionHelper.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="Models\OperationModel.cs" />
     <Compile Include="Models\ProgramModel.cs" />
     <Compile Include="Models\RamModel.cs" />
