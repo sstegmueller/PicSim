@@ -708,8 +708,9 @@ namespace PicSim.Models {
 		private void SLEEPCommand(OperationModel opModel) {
       Ram.ToggleRegisterBit((int)SFR.STATUS, 3, false);
       Ram.ToggleRegisterBit((int)SFR.STATUS, 4, true);
-      _watchdog = 0;
-      _prescaler = 0;
+      Ram.ToggleRegisterBit((int)SFR.OPTION_REG, 0, false);
+      Ram.ToggleRegisterBit((int)SFR.OPTION_REG, 1, false);
+      Ram.ToggleRegisterBit((int)SFR.OPTION_REG, 2, false);
       //TODO: Put into sleep mode
     }
 
