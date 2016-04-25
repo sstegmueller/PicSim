@@ -16,6 +16,8 @@ namespace PicSim.Models {
 		private int _progCounter;
     private int _cycles = 0;
     private int _timer = 0;
+    private bool _tempRB0;
+    private int _tempPortB;
 
     #endregion //Fields
 
@@ -241,6 +243,8 @@ namespace PicSim.Models {
       _progCounter++;
       Cycles++;
 			_ram.SetRegisterValue((int)SFR.PCL, _progCounter);
+      _tempRB0 = Ram.GetRegisterBit((int)SFR.PORTB, 0);
+      _tempPortB = GetPortBInterruptPins();
 		}
 
     private void CheckInterrupt() {
@@ -250,21 +254,20 @@ namespace PicSim.Models {
       bool INTE = Ram.GetRegisterBit((int)SFR.INTCON, 4);
       bool RBIE = Ram.GetRegisterBit((int)SFR.INTCON, 3);
       bool T0IF = Ram.GetRegisterBit((int)SFR.INTCON, 2);
-      bool INTF = Ram.GetRegisterBit((int)SFR.INTCON, 1);
-      bool RBIF = Ram.GetRegisterBit((int)SFR.INTCON, 0);
-      bool EEIF = Ram.GetRegisterBit((int)SFR.EECON1, 4);
       if (GIE) {
         if (T0IE && T0IF) {
           ExecuteInterrupt();
         }
-        if (INTE && INTF) {
+        if (INTE && CheckExternalInterrupt()) {
+          Ram.ToggleRegisterBit((int)SFR.INTCON, 1, true);
           ExecuteInterrupt();
         }
-        if (EEIE && EEIF) {
+        if (EEIE) {
           ExecuteInterrupt();
           //TODO: EEPROM implementation
         }
-        if (RBIE && RBIF) {
+        if (RBIE && CheckPortBInterrupt()) {
+          Ram.ToggleRegisterBit((int)SFR.INTCON, 0, true);
           ExecuteInterrupt();
         }
       }      
@@ -280,6 +283,31 @@ namespace PicSim.Models {
       int mask = 0x07;
       int prescaleValue = Ram.GetRegisterValue((int)SFR.OPTION_REG) & mask;
       return 2 ^ (prescaleValue + 1);
+    }
+
+    private bool CheckExternalInterrupt() {
+      bool INTEDG = Ram.GetRegisterBit((int)SFR.OPTION_REG, 6);
+      bool currentRB0 = Ram.GetRegisterBit((int)SFR.PORTB, 0);
+      if (INTEDG && !_tempRB0 && currentRB0) {
+        return true;
+      }
+      if (!INTEDG && _tempRB0 && !currentRB0) {
+        return true;
+      }
+      return false;
+    }
+
+    private bool CheckPortBInterrupt() {
+      if((GetPortBInterruptPins() & _tempPortB) != _tempPortB) {
+        return true;
+      }
+      return false;
+    }
+
+    private int GetPortBInterruptPins() {
+      int inputPins = Ram.GetRegisterValue((int)SFR.PORTB) & Ram.GetRegisterValue((int)SFR.TRISB);
+      int result = inputPins & 0xF0;
+      return result;
     }
 
     public OperationModel GetOpByIndex(int index) {
