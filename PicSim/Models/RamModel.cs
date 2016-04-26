@@ -66,12 +66,20 @@ namespace PicSim.Models {
 					_ramArray[adress] = (byte)(value | mask);
 				}
 				else {
-					_ramArray[adress] = (byte)(value & mask);
-				}
+          _ramArray[adress] = (byte)(_ramArray[adress] & ~(mask));
+        }
 			}					
 		}
 
-		public bool GetRegisterBit(int adress, int bit) {
+    public void ToggleRegisterBit(int adress, int bit) {
+      if (bit < 8 && bit > -1) {
+        byte mask = Convert.ToByte(0x01 << bit);
+        byte value = _ramArray[adress];
+          _ramArray[adress] = (byte)(value ^ mask);
+      }
+    }
+
+    public bool GetRegisterBit(int adress, int bit) {
 			if (bit < 8 && bit > -1) {
 				return (_ramArray[adress] & (1 << bit)) != 0;				
 			}

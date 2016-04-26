@@ -205,7 +205,6 @@ namespace PicSim.ViewModels {
     private void RefreshVMs() {
       RamVM.RefreshDataTable(_progModel.Ram.RamArray);
       SfrVM.RefreshSfr(_progModel.Ram, _progModel.ProgCounter);
-      SfrVM.RefreshDataTable(_progModel.Ram);
     }
 
     private void BrushCurrentOp() {
@@ -239,6 +238,7 @@ namespace PicSim.ViewModels {
         // Open document 
         FileNameContent = dlg.SafeFileName;
         _progModel = new ProgramModel(dlg.FileName);
+        _sFRVM.GiveRamModel(_progModel.Ram);
         ShowOperations();
         CanStep = true;
       }
