@@ -35,6 +35,7 @@ namespace PicSim.Models {
 
 		public RamModel() {
 			_ramArray = new byte[0xFF];
+      _stack = new Stack<int>();
 		}
 
 		#endregion //Constructors

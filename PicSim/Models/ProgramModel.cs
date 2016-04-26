@@ -454,7 +454,7 @@ namespace PicSim.Models {
 		}
 
 		private void CLRFCommand(OperationModel opModel) {
-			Ram.SetRegisterValue(opModel.Args.Byte2, 0);
+			Ram.SetRegisterValue(opModel.Args.Byte1, 0);
 			CheckZeroBit(opModel.Args.Byte2);
 		}
 
