@@ -179,7 +179,7 @@ namespace PicSim.ViewModels {
       Operations = new BindableCollection<OperationViewModel>();
       RamVM = new RamViewModel();
       SfrVM = new SfrViewModel();
-      _worker.DoWork += worker_DoWork;
+      _worker.DoWork += worker_RunProgram;
       _worker.WorkerSupportsCancellation = true;
     }
 
@@ -242,7 +242,7 @@ namespace PicSim.ViewModels {
       _worker.RunWorkerAsync();
     }
 
-    private void worker_DoWork(object sender, DoWorkEventArgs e) {
+    private void worker_RunProgram(object sender, DoWorkEventArgs e) {
       if (_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak &&
         _progModel.ProgCounter < _progModel.Operations.Last().Index) {
         UseCommand();
@@ -250,6 +250,10 @@ namespace PicSim.ViewModels {
       while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
             !_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
         UseCommand();
+        if (_worker.CancellationPending) {
+          e.Cancel = true;
+          return;
+        }
       }
     }
 
@@ -264,6 +268,7 @@ namespace PicSim.ViewModels {
       _progModel.ProgCounter = 0;
       BrushCurrentOp();
       RefreshVMs();
+      _worker.CancelAsync();
     }
     #endregion //Methods
   }
