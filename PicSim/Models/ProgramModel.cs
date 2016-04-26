@@ -205,7 +205,7 @@ namespace PicSim.Models {
       int f = opcode & Convert.ToInt32(0x007F);
 			f = CheckForFSR(f);
 			opModel.SetArgs(f);
-			opModel.OpType = OperationType.ByteOrientedFD;
+			opModel.OpType = OperationType.ByteOrientedF;
     }
 
     private void ParseBFArgs(int opcode, OperationModel opModel) {
@@ -322,7 +322,7 @@ namespace PicSim.Models {
 		private void ChooseCommand(OperationModel opModel) {
 			switch (opModel.Operation) {
 				case Operation.ADDLW:
-
+          ADDLWCommand(opModel);
 					break;
 				case Operation.ADDWF:
 					ADDWFCommand(opModel);
@@ -531,7 +531,7 @@ namespace PicSim.Models {
 		}
 
     private void MOVWFCommand(OperationModel opModel) {
-      Ram.SetRegisterValue(opModel.Args.Byte2, Ram.GetRegisterValue());
+      Ram.SetRegisterValue(opModel.Args.Byte1, Ram.GetRegisterValue());
     }
 
     private void NOPCommand() {
@@ -562,7 +562,7 @@ namespace PicSim.Models {
 		private void RRFCommand(OperationModel opModel) {
 			bool lsb = Ram.GetRegisterBit(opModel.Args.Byte2, 0);
 			bool carry = Ram.GetRegisterBit((int)SFR.STATUS, 0);
-			int shift = 2 / Ram.GetRegisterValue(opModel.Args.Byte2);
+			int shift = Ram.GetRegisterValue(opModel.Args.Byte2) / 2;
 			if (carry) {
 				shift += 255;
 			}
