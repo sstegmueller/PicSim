@@ -7,33 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-        <Label x:Name="SFR" Content="Special Function Registers" FontWeight="DemiBold"/>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".5*"/>
-                <ColumnDefinition Width=".5*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Label x:Name="WReg" Grid.Column ="0" Grid.Row="0" Content="W-Reg"/>
-            <Label x:Name="WregValue" Grid.Column ="1" Grid.Row="0" Content="{Binding WRegValue}"/>
-            <Label x:Name="FSR" Grid.Column ="0" Grid.Row="1" Content="FSR"/>
-            <Label x:Name="FSRValue" Grid.Column ="1" Grid.Row="1" Content="{Binding FSRValue}"/>
-            <Label x:Name="PCL" Grid.Column ="0" Grid.Row="2" Content="PCL"/>
-            <Label x:Name="PCLValue" Grid.Column ="1" Grid.Row="2" Content="{Binding PCLValue}"/>
-            <Label x:Name="PCLATH" Grid.Column ="0" Grid.Row="3" Content="PCLATH"/>
-            <Label x:Name="PCLATHValue" Grid.Column ="1" Grid.Row="3" Content="{Binding PCLATHValue}"/>
-            <Label x:Name="PC" Grid.Column ="0" Grid.Row="4" Content="PC"/>
-            <Label x:Name="PCValue" Grid.Column ="1" Grid.Row="4" Content="{Binding PCValue}"/>
-            <Label x:Name="Status" Grid.Column ="0" Grid.Row="5" Content="Status"/>
-            <Label x:Name="StatusValue" Grid.Column ="1" Grid.Row="5" Content="{Binding StatusValue}"/>
-        </Grid>
         <Label Content="IO Ports" FontWeight="DemiBold"/>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -79,6 +52,33 @@
             <CheckBox Grid.Column="6" Grid.Row="2" IsChecked="{Binding RB2}"/>
             <CheckBox Grid.Column="7" Grid.Row="2" IsChecked="{Binding RB1}"/>
             <CheckBox Grid.Column="8" Grid.Row="2" IsChecked="{Binding RB0}"/>
+        </Grid>
+        <Label x:Name="SFR" Content="Special Function Registers" FontWeight="DemiBold"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".5*"/>
+                <ColumnDefinition Width=".5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="WReg" Grid.Column ="0" Grid.Row="0" Content="W-Reg"/>
+            <Label x:Name="WregValue" Grid.Column ="1" Grid.Row="0" Content="{Binding WRegValue}"/>
+            <Label x:Name="FSR" Grid.Column ="0" Grid.Row="1" Content="FSR"/>
+            <Label x:Name="FSRValue" Grid.Column ="1" Grid.Row="1" Content="{Binding FSRValue}"/>
+            <Label x:Name="PCL" Grid.Column ="0" Grid.Row="2" Content="PCL"/>
+            <Label x:Name="PCLValue" Grid.Column ="1" Grid.Row="2" Content="{Binding PCLValue}"/>
+            <Label x:Name="PCLATH" Grid.Column ="0" Grid.Row="3" Content="PCLATH"/>
+            <Label x:Name="PCLATHValue" Grid.Column ="1" Grid.Row="3" Content="{Binding PCLATHValue}"/>
+            <Label x:Name="PC" Grid.Column ="0" Grid.Row="4" Content="PC"/>
+            <Label x:Name="PCValue" Grid.Column ="1" Grid.Row="4" Content="{Binding PCValue}"/>
+            <Label x:Name="Status" Grid.Column ="0" Grid.Row="5" Content="Status"/>
+            <Label x:Name="StatusValue" Grid.Column ="1" Grid.Row="5" Content="{Binding StatusValue}"/>
         </Grid>
     </StackPanel>
 </UserControl>

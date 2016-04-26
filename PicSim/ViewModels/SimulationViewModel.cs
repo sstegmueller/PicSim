@@ -267,7 +267,6 @@ namespace PicSim.ViewModels {
 
     public void Stop() {
       _progModel.Ram = new RamModel();
-      RamVM = new RamViewModel();
       _progModel.ProgCounter = 0;
       BrushCurrentOp();
       RefreshVMs();
