@@ -221,18 +221,11 @@ namespace PicSim.ViewModels {
     public void OpenFile() {
       // Create OpenFileDialog 
       Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-
-
       // Set filter for file extension and default file extension 
       dlg.DefaultExt = ".lst";
       dlg.Filter = "LST Files (*.lst)|*.lst";
-
-
       // Display OpenFileDialog by calling ShowDialog method 
       Nullable<bool> result = dlg.ShowDialog();
-
-
       // Get the selected file name and display in a TextBox 
       if (result == true) {
         // Open document 
@@ -240,6 +233,7 @@ namespace PicSim.ViewModels {
         _progModel = new ProgramModel(dlg.FileName);
         _sFRVM.GiveRamModel(_progModel.Ram);
         ShowOperations();
+        RefreshVMs();
         CanStep = true;
       }
     }
