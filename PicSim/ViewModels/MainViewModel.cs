@@ -43,7 +43,7 @@ namespace PicSim.ViewModels {
       }
     }
 
-    internal HelpViewModel Help {
+    public HelpViewModel Help {
       get {
         return _help;
       }
