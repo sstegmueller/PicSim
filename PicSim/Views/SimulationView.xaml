@@ -21,8 +21,10 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="0,0,1.8,342" Grid.RowSpan="2">
             <WrapPanel>
-                <Button x:Name="OpenFile" Grid.Row="0" Grid.Column="0" Content="{Binding OpenFileContent}"/>
-                <Label x:Name="FileName" Grid.Row="0" Grid.Column="0" Content="{Binding FileNameContent}" FontWeight="SemiBold"/>
+                <Button x:Name="OpenFile" Grid.Row="0" Grid.Column="0" Content="{Binding OpenFileContent}"
+                        IsEnabled="{Binding OpenFileIsEnabled}"/>
+                <Label x:Name="FileName" Grid.Row="0" Grid.Column="0" Content="{Binding FileNameContent}"
+                       FontWeight="SemiBold"/>
             </WrapPanel>
         </StackPanel>
         <DockPanel Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
@@ -44,7 +46,8 @@
                 <Label x:Name="OperationArg1" Grid.Column="3" HorizontalAlignment="Left" FontWeight="DemiBold"/>
                 <Label x:Name="OperationArg2" Grid.Column="4" HorizontalAlignment="Left" FontWeight="DemiBold"/>
             </Grid>
-            <ListBox x:Name="Operations" ItemsSource="{Binding Operations}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ListBox x:Name="Operations" ItemsSource="{Binding Operations}" HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <ContentControl cal:View.Model="{Binding}" />

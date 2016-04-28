@@ -14,6 +14,7 @@ namespace PicSim.ViewModels {
     #region Fields
 
     private string _openFileContent;
+    private bool _openFileIsEnabled = true;
     private string _fileNameContent;
     private string _operationIndex;
     private string _operationBreak;
@@ -40,6 +41,20 @@ namespace PicSim.ViewModels {
       set {
         _openFileContent = value;
         NotifyOfPropertyChange(() => OpenFileContent);
+      }
+    }
+
+    public bool OpenFileIsEnabled
+    {
+      get
+      {
+        return _openFileIsEnabled;
+      }
+
+      set
+      {
+        _openFileIsEnabled = value;
+        NotifyOfPropertyChange(() => OpenFileIsEnabled);
       }
     }
 
@@ -239,6 +254,7 @@ namespace PicSim.ViewModels {
     }
 
     public void Start() {
+      OpenFileIsEnabled = false;
       _worker.RunWorkerAsync();
     }
 
@@ -264,6 +280,7 @@ namespace PicSim.ViewModels {
     }
 
     public void Stop() {
+      OpenFileIsEnabled = true;
       _progModel.Ram = new RamModel();
       _progModel.ProgCounter = 0;
       BrushCurrentOp();
