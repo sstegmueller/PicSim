@@ -233,6 +233,21 @@ namespace PicSim.ViewModels {
       }
     }
 
+    private void worker_RunProgram(object sender, DoWorkEventArgs e) {
+      if (_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak &&
+        _progModel.ProgCounter < _progModel.Operations.Last().Index) {
+        UseCommand();
+      }
+      while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
+            !_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
+        UseCommand();
+        if (_worker.CancellationPending) {
+          e.Cancel = true;
+          return;
+        }
+      }
+    }
+
     public void OpenFile() {
       // Create OpenFileDialog 
       Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -257,22 +272,7 @@ namespace PicSim.ViewModels {
       OpenFileIsEnabled = false;
       _worker.RunWorkerAsync();
     }
-
-    private void worker_RunProgram(object sender, DoWorkEventArgs e) {
-      if (_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak &&
-        _progModel.ProgCounter < _progModel.Operations.Last().Index) {
-        UseCommand();
-      }
-      while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
-            !_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
-        UseCommand();
-        if (_worker.CancellationPending) {
-          e.Cancel = true;
-          return;
-        }
-      }
-    }
-
+    
     public void Step() {
       if (_progModel.ProgCounter < _progModel.Operations.Last().Index) {
         UseCommand();
