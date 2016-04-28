@@ -16,13 +16,13 @@ namespace PicSim.ViewModels {
     private string _openFileContent;
     private bool _openFileIsEnabled = true;
     private string _fileNameContent;
+    private BindableCollection<OperationViewModel> _operations;
     private string _operationIndex;
     private string _operationBreak;
     private string _operationName;
     private string _operationArg1;
     private string _operationArg2;
     private ProgramModel _progModel;
-    private BindableCollection<OperationViewModel> _operations;
     private RamViewModel _ramVM;
     private SfrViewModel _sFRVM;
     private string _ramName;
@@ -157,17 +157,6 @@ namespace PicSim.ViewModels {
       }
     }
 
-    public bool CanStep {
-      get {
-        return _canStep;
-      }
-
-      set {
-        _canStep = value;
-        NotifyOfPropertyChange(() => CanStep);
-      }
-    }
-
     public SfrViewModel SfrVM {
       get {
         return _sFRVM;
@@ -176,6 +165,20 @@ namespace PicSim.ViewModels {
       set {
         _sFRVM = value;
         NotifyOfPropertyChange(() => SfrVM);
+      }
+    }
+
+    public bool CanStep
+    {
+      get
+      {
+        return _canStep;
+      }
+
+      set
+      {
+        _canStep = value;
+        NotifyOfPropertyChange(() => CanStep);
       }
     }
 
@@ -287,6 +290,7 @@ namespace PicSim.ViewModels {
       RefreshVMs();
       _worker.CancelAsync();
     }
+
     #endregion //Methods
   }
 }
