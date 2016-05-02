@@ -43,15 +43,17 @@ namespace PicSim.Models {
 		#region Methods
 
 		public void SetRegisterValue(int adress, int value) {
+      adress = CheckRegisterBank(adress);
 			_ramArray[adress] = (byte)value;
 		}
 
 		public void SetRegisterValue(int value) {
-			_wReg = (byte)value;
+      _wReg = (byte)value;
 		}
 
 		public int GetRegisterValue(int adress) {
-			return Convert.ToInt32(_ramArray[adress]);
+      adress = CheckRegisterBank(adress);
+      return Convert.ToInt32(_ramArray[adress]);
 		}
 
 		public int GetRegisterValue() {
@@ -59,7 +61,8 @@ namespace PicSim.Models {
 		}
 
 		public void ToggleRegisterBit(int adress, int bit, bool set) {
-			if(bit < 8 && bit > -1) {
+      adress = CheckRegisterBank(adress);
+      if (bit < 8 && bit > -1) {
 				byte mask = Convert.ToByte(0x01 << bit);
 				byte value = _ramArray[adress];
 				if (set) {					
@@ -72,6 +75,7 @@ namespace PicSim.Models {
 		}
 
     public void ToggleRegisterBit(int adress, int bit) {
+      adress = CheckRegisterBank(adress);
       if (bit < 8 && bit > -1) {
         byte mask = Convert.ToByte(0x01 << bit);
         byte value = _ramArray[adress];
@@ -80,11 +84,19 @@ namespace PicSim.Models {
     }
 
     public bool GetRegisterBit(int adress, int bit) {
-			if (bit < 8 && bit > -1) {
+      adress = CheckRegisterBank(adress);
+      if (bit < 8 && bit > -1) {
 				return (_ramArray[adress] & (1 << bit)) != 0;				
 			}
 			return false;
 		}
+
+    private int CheckRegisterBank(int adress) {
+      if((_ramArray[(int)SFR.STATUS] & (1 << 5)) != 0) {
+        adress += 0x80;
+      }
+      return adress;
+    }
 
     public void PushStack(int adress) {
       _stack.Push(adress);

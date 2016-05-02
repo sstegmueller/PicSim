@@ -14,6 +14,7 @@ namespace PicSim.Models {
     private Operation _operation;
 		private OperationType _opType;
     private Arguments _args;
+    private bool _isIndirect;
 
     #endregion //Fields
 
@@ -65,11 +66,24 @@ namespace PicSim.Models {
 			}
 		}
 
-		#endregion //Properties
+    public bool IsIndirect
+    {
+      get
+      {
+        return _isIndirect;
+      }
 
-		#region Constructors
+      set
+      {
+        _isIndirect = value;
+      }
+    }
 
-		public OperationModel(int index, Operation operation) {
+    #endregion //Properties
+
+    #region Constructors
+
+    public OperationModel(int index, Operation operation) {
       _index = index;
       _operation = operation;
     }

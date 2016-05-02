@@ -196,21 +196,22 @@ namespace PicSim.Models {
       int intD = opcode & Convert.ToInt32(0x0080);
       BitArray byteD = new BitArray(new int[] { intD });
       int f = opcode & Convert.ToInt32(0x007F);
-			f = CheckForFSR(f);
+      CheckFSR(opModel, f);
       opModel.SetArgs(byteD[7], f);
 			opModel.OpType = OperationType.ByteOrientedFD;
     }
 
     private void ParseFArgs(int opcode, OperationModel opModel) {
       int f = opcode & Convert.ToInt32(0x007F);
-			f = CheckForFSR(f);
-			opModel.SetArgs(f);
+      CheckFSR(opModel, f);
+      opModel.SetArgs(f);
 			opModel.OpType = OperationType.ByteOrientedF;
     }
 
     private void ParseBFArgs(int opcode, OperationModel opModel) {
       int b = (opcode & Convert.ToInt32(0x0380)) / 0x80;
       int f = opcode & Convert.ToInt32(0x007F);
+      CheckFSR(opModel, f);
       opModel.SetArgs(b, f);
 			opModel.OpType = OperationType.BitOriented;
     }
@@ -238,6 +239,7 @@ namespace PicSim.Models {
 
 		public void ExecuteCommand(int index) {
       OperationModel op = GetOpByIndex(index);
+      UseFSRValue(op);
       CheckInterrupt();
 			ChooseCommand(op);
       _progCounter++;
@@ -738,13 +740,27 @@ namespace PicSim.Models {
       CheckZeroBit();
 		}
 
-    private int CheckForFSR(int adress) {
-			int resultAdress = adress;
-			if(adress == 0) {
-				resultAdress = (int)SFR.FSR;
-			}
-			return resultAdress;
-		}
+    private void CheckFSR(OperationModel opModel, int adress) {
+      if(adress == 0) {
+        opModel.IsIndirect = true;
+      }
+    }
+
+    private void UseFSRValue(OperationModel opModel) {
+      if(opModel.OpType != OperationType.LiteralControl &&
+        opModel.OpType != OperationType.NoArgs &&
+        opModel.OpType == OperationType.ByteOrientedF &&
+        opModel.IsIndirect) {
+          opModel.Args.Byte1 = Ram.GetRegisterValue((int)SFR.FSR);
+          return;
+      }
+        
+      if (opModel.OpType != OperationType.LiteralControl &&
+        opModel.OpType != OperationType.NoArgs &&
+        opModel.IsIndirect) {
+          opModel.Args.Byte2 = Ram.GetRegisterValue((int)SFR.FSR);
+      }
+    }
 		
 		private void CheckCarryBit(int byte1, int byte2) {
 			if(byte1 + byte2 > 255) {

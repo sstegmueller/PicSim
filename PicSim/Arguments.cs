@@ -31,6 +31,10 @@ namespace PicSim {
       {
         return _byte1;
       }
+      set
+      {
+        _byte1 = value;
+      }
     }
 
     public int Byte2
@@ -38,6 +42,10 @@ namespace PicSim {
       get
       {
         return _byte2;
+      }
+      set
+      {
+        _byte2 = value;
       }
     }
 
