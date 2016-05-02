@@ -66,6 +66,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label x:Name="WReg" Grid.Column ="0" Grid.Row="0" Content="W-Reg"/>
             <Label x:Name="WregValue" Grid.Column ="1" Grid.Row="0" Content="{Binding WRegValue}"/>
@@ -79,6 +80,8 @@
             <Label x:Name="PCValue" Grid.Column ="1" Grid.Row="4" Content="{Binding PCValue}"/>
             <Label x:Name="Status" Grid.Column ="0" Grid.Row="5" Content="Status"/>
             <Label x:Name="StatusValue" Grid.Column ="1" Grid.Row="5" Content="{Binding StatusValue}"/>
+            <Label x:Name="CarryBit" Grid.Column="0" Grid.Row="6" Content="CarryBit"/>
+            <Label x:Name="CarryBitValue" Grid.Column="1" Grid.Row="6" Content="{Binding CarryBitValue}"/>
         </Grid>
     </StackPanel>
 </UserControl>

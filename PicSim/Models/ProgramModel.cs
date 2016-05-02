@@ -464,12 +464,19 @@ namespace PicSim.Models {
 		}
 
 		private void COMFCommand(OperationModel opModel) {
-			Ram.SetRegisterValue(opModel.Args.Byte2, ~Ram.GetRegisterValue(opModel.Args.Byte2));
-			CheckZeroBit(opModel.Args.Byte2);
-		}
+      if (opModel.Args.Bool1) {
+        Ram.SetRegisterValue(opModel.Args.Byte2, ~Ram.GetRegisterValue(opModel.Args.Byte2));
+        CheckZeroBit(opModel.Args.Byte2);
+      }
+      else {
+        Ram.SetRegisterValue(~Ram.GetRegisterValue(opModel.Args.Byte2));
+        CheckZeroBit(opModel.Args.Byte2);
+      }
+    }
 
 		private void DECFCommand(OperationModel opModel) {
-			int dec = Ram.GetRegisterValue(opModel.Args.Byte2) - 1;
+      int regValue = Ram.GetRegisterValue(opModel.Args.Byte2);
+      int dec = regValue - 1;
 			if (opModel.Args.Bool1) {
 				Ram.SetRegisterValue(opModel.Args.Byte2, dec);
 				CheckZeroBit(opModel.Args.Byte2);
@@ -564,7 +571,7 @@ namespace PicSim.Models {
 			bool carry = Ram.GetRegisterBit((int)SFR.STATUS, 0);
 			int shift = Ram.GetRegisterValue(opModel.Args.Byte2) / 2;
 			if (carry) {
-				shift += 255;
+				shift += 128;
 			}
 			if (lsb) {
 				Ram.ToggleRegisterBit((int)SFR.STATUS, 0, true);
@@ -582,7 +589,7 @@ namespace PicSim.Models {
 
 		private void SUBWFCommand(OperationModel opModel) {
       int f = Ram.GetRegisterValue(opModel.Args.Byte2);
-      int sub = (byte)(Ram.GetRegisterValue() + 128);
+      int sub = ~Ram.GetRegisterValue() + 1;
       int subtraction = f + sub;
       CheckCarryBit(f, sub);
       CheckDigitCarryBit(f, sub);
@@ -598,7 +605,7 @@ namespace PicSim.Models {
   
 		private void SWAPFCommand(OperationModel opModel) {
       int byteVal = Ram.GetRegisterValue(opModel.Args.Byte2);
-      byte lowNibble = (byte)(byteVal & 0x0F);
+      byte lowNibble = (byte)((byteVal & 0x0F) << 4);
       byte highNibble = (byte)((byteVal & 0xF0) >> 4);
       int switchedByte = lowNibble | highNibble;
       if (opModel.Args.Bool1) {
@@ -660,8 +667,8 @@ namespace PicSim.Models {
     }
 
 		private void CALLCommand(OperationModel opModel) {
-      Ram.PushStack(ProgCounter + 1);
-      ProgCounter = opModel.Args.Byte1;
+      Ram.PushStack(ProgCounter);
+      ProgCounter = opModel.Args.Byte1 - 1;
       //TODO: PCLATH logic
       Cycles++;
 		}
@@ -671,7 +678,7 @@ namespace PicSim.Models {
 		}
 
 		private void GOTOCommand(OperationModel opModel) {
-			ProgCounter = opModel.Args.Byte1;
+			ProgCounter = opModel.Args.Byte1 - 1;
       //TODO: PCLATH logic
       Cycles++;
 		}
@@ -715,8 +722,9 @@ namespace PicSim.Models {
     }
 
 		private void SUBLWCommand(OperationModel opModel) {
-      int literal = Ram.GetRegisterValue(opModel.Args.Byte2);
-      int sub = (byte)(Ram.GetRegisterValue() + 128);
+      int literal = opModel.Args.Byte1;
+      int wValue = Ram.GetRegisterValue();
+      int sub = ~wValue + 1;
       int subtraction = literal + sub;
       CheckCarryBit(literal, sub);
       CheckDigitCarryBit(literal, sub);
@@ -725,7 +733,7 @@ namespace PicSim.Models {
 		}
 
 		private void XORLWCommand(OperationModel opModel) {
-      int literal = Ram.GetRegisterValue(opModel.Args.Byte2);
+      int literal = opModel.Args.Byte1;
       Ram.SetRegisterValue(literal ^ Ram.GetRegisterValue());
       CheckZeroBit();
 		}
@@ -748,9 +756,9 @@ namespace PicSim.Models {
 		}
 
 		private void CheckDigitCarryBit(int byte1, int byte2) {
-			byte mask = Convert.ToByte(15);
-			byte lowValue1 = (byte)(mask & Convert.ToByte(byte1));
-			byte lowValue2 = (byte)(mask & Convert.ToByte(byte2));
+			int mask = 15;
+			int lowValue1 = mask & byte1;
+			int lowValue2 = mask & byte2;
 			if ((lowValue1 + lowValue2) > 15) {
 				Ram.ToggleRegisterBit((int)SFR.STATUS, 1, true);
 			}

@@ -18,6 +18,7 @@ namespace PicSim.ViewModels {
     private string _pCLATHValue;
     private string _pCValue;
     private string _statusValue;
+    private string _carryBitValue;
     private RamModel _ram;
     private bool _rA0;
     private bool _rA1;
@@ -103,6 +104,20 @@ namespace PicSim.ViewModels {
       set {
         _pCLValue = value;
         NotifyOfPropertyChange(() => PCLValue);
+      }
+    }
+
+    public string CarryBitValue
+    {
+      get
+      {
+        return _carryBitValue;
+      }
+
+      set
+      {
+        _carryBitValue = value;
+        NotifyOfPropertyChange(() => CarryBitValue);
       }
     }
 
@@ -364,6 +379,7 @@ namespace PicSim.ViewModels {
       PCLATHValue = Tools.ToHexString(ram.RamArray[(int)SFR.PCLATH]);
       PCValue = Tools.ToHexString(pc);
       StatusValue = Tools.ToHexString(ram.RamArray[(int)SFR.STATUS]);
+      CarryBitValue = Tools.ToHexString(ram.GetRegisterBit((int)SFR.STATUS, 0));
     }
 
     public void GiveRamModel(RamModel ram) {
