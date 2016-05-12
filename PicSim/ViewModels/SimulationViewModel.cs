@@ -26,6 +26,7 @@ namespace PicSim.ViewModels {
     private RamViewModel _ramVM;
     private SfrViewModel _sFRVM;
     private StackViewModel _stackVM;
+    private TimerViewModel _timerVM;
     private string _ramName;
     private readonly BackgroundWorker _worker = new BackgroundWorker();
     private bool _canStep;
@@ -177,6 +178,17 @@ namespace PicSim.ViewModels {
       }
     }
 
+    public TimerViewModel TimerVM {
+      get {
+        return _timerVM;
+      }
+
+      set {
+        _timerVM = value;
+        NotifyOfPropertyChange(() => TimerVM);
+      }
+    }
+
     public bool CanStep {
       get {
         return _canStep;
@@ -204,6 +216,7 @@ namespace PicSim.ViewModels {
       RamVM = new RamViewModel();
       SfrVM = new SfrViewModel();
       StackVM = new StackViewModel();
+      TimerVM = new TimerViewModel();
       _worker.DoWork += worker_RunProgram;
       _worker.WorkerSupportsCancellation = true;
     }
@@ -231,6 +244,7 @@ namespace PicSim.ViewModels {
       RamVM.RefreshDataTable(_progModel.Ram.RamArray);
       SfrVM.RefreshSfr(_progModel.Ram, _progModel.ProgCounter);
       StackVM.RefreshStack(_progModel.Ram.Stack);
+      TimerVM.RefreshTime(_progModel.Cycles);
     }
 
     private void BrushCurrentOp() {
@@ -246,10 +260,10 @@ namespace PicSim.ViewModels {
 
     private void worker_RunProgram(object sender, DoWorkEventArgs e) {
       if (_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak &&
-        _progModel.ProgCounter < _progModel.Operations.Last().Index) {
+        _progModel.ProgCounter <= _progModel.Operations.Last().Index) {
         UseCommand();
       }
-      while (_progModel.ProgCounter < _progModel.Operations.Last().Index &&
+      while (_progModel.ProgCounter <= _progModel.Operations.Last().Index &&
             !_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
         UseCommand();
         if (_worker.CancellationPending) {
@@ -285,7 +299,7 @@ namespace PicSim.ViewModels {
     }
 
     public void Step() {
-      if (_progModel.ProgCounter < _progModel.Operations.Last().Index) {
+      if (_progModel.ProgCounter <= _progModel.Operations.Last().Index) {
         UseCommand();
       }
     }
@@ -294,6 +308,7 @@ namespace PicSim.ViewModels {
       OpenFileIsEnabled = true;
       _progModel.Ram = new RamModel();
       _progModel.ProgCounter = 0;
+      _progModel.Cycles = 0;
       BrushCurrentOp();
       RefreshVMs();
       _worker.CancelAsync();

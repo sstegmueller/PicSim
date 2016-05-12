@@ -119,6 +119,7 @@
     <Compile Include="ViewModels\SfrViewModel.cs" />
     <Compile Include="ViewModels\SimulationViewModel.cs" />
     <Compile Include="ViewModels\StackViewModel.cs" />
+    <Compile Include="ViewModels\TimerViewModel.cs" />
     <Compile Include="Views\HelpView.xaml.cs">
       <DependentUpon>HelpView.xaml</DependentUpon>
     </Compile>
@@ -139,6 +140,9 @@
     </Compile>
     <Compile Include="Views\StackView.xaml.cs">
       <DependentUpon>StackView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TimerView.xaml.cs">
+      <DependentUpon>TimerView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +199,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StackView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TimerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

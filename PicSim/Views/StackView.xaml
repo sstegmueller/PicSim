@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:PicSim.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <WrapPanel>
-        <Label Content="Stack: "/>
+    <StackPanel>
+        <Label Content="Stack" FontWeight="DemiBold"/>
         <ListBox x:Name="Stack" ItemsSource="{Binding Stack}" HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch">
             <ListBox.ItemsPanel>
@@ -16,5 +16,5 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
-    </WrapPanel>    
+    </StackPanel>    
 </UserControl>
