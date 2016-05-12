@@ -25,6 +25,7 @@ namespace PicSim.ViewModels {
     private ProgramModel _progModel;
     private RamViewModel _ramVM;
     private SfrViewModel _sFRVM;
+    private StackViewModel _stackVM;
     private string _ramName;
     private readonly BackgroundWorker _worker = new BackgroundWorker();
     private bool _canStep;
@@ -165,6 +166,17 @@ namespace PicSim.ViewModels {
       }
     }
 
+    public StackViewModel StackVM {
+      get {
+        return _stackVM;
+      }
+
+      set {
+        _stackVM = value;
+        NotifyOfPropertyChange(() => StackVM);
+      }
+    }
+
     public bool CanStep {
       get {
         return _canStep;
@@ -175,7 +187,7 @@ namespace PicSim.ViewModels {
         NotifyOfPropertyChange(() => CanStep);
       }
     }
-
+    
     #endregion //Properties
 
     #region Constructors
@@ -191,6 +203,7 @@ namespace PicSim.ViewModels {
       Operations = new BindableCollection<OperationViewModel>();
       RamVM = new RamViewModel();
       SfrVM = new SfrViewModel();
+      StackVM = new StackViewModel();
       _worker.DoWork += worker_RunProgram;
       _worker.WorkerSupportsCancellation = true;
     }
@@ -217,6 +230,7 @@ namespace PicSim.ViewModels {
     private void RefreshVMs() {
       RamVM.RefreshDataTable(_progModel.Ram.RamArray);
       SfrVM.RefreshSfr(_progModel.Ram, _progModel.ProgCounter);
+      StackVM.RefreshStack(_progModel.Ram.Stack);
     }
 
     private void BrushCurrentOp() {

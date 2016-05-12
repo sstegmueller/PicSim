@@ -29,13 +29,19 @@ namespace PicSim.Models {
       }
     }
 
+    public Stack<int> Stack {
+      get {
+        return _stack;
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
 
     public RamModel() {
       _ramArray = new byte[0xFF];
-      _stack = new Stack<int>(8);
+      _stack = new Stack<int>();
     }
 
     #endregion //Constructors
@@ -99,7 +105,7 @@ namespace PicSim.Models {
     }
 
     public void PushStack(int adress) {
-      if (_stack.Count == 8) {
+      if (Stack.Count == 8) {
         _stack.Clear();
       }
       _stack.Push(adress);

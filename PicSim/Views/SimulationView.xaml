@@ -55,11 +55,14 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </DockPanel>
+        <StackPanel Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
+            <ContentControl x:Name="SfrVM" Content="{Binding SFRVM}"/>
+            <ContentControl x:Name="StackVM" Content="{Binding StackVM}"/>
+        </StackPanel>        
         <StackPanel Grid.Column="2" Grid.Row="2" VerticalAlignment="Bottom">
             <Button x:Name="Start" Content="Start" IsEnabled="{Binding CanStep}"/>
             <Button x:Name="Step" Content="Step" IsEnabled="{Binding CanStep}"/>
             <Button x:Name="Stop" Content="Stop" IsEnabled="{Binding CanStep}"/>
-        </StackPanel>
-        <ContentControl x:Name="SfrVM" Content="{Binding SFRVM}" Grid.Column="2" Grid.Row="1"/>
+        </StackPanel>        
     </Grid>
 </UserControl>
