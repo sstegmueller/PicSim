@@ -52,8 +52,13 @@ namespace PicSim.ViewModels {
     #region Methods
 
     public void RefreshTime(int cycles) {
-      double factor = (Convert.ToDouble(CrystalFrequency));
-      Runtime = ((cycles / factor) * 4).ToString();
+      try {
+        double factor = (Convert.ToDouble(CrystalFrequency));
+        Runtime = ((cycles / factor) * 4).ToString();
+      }
+      catch {
+        Runtime = "NaN";
+      }
     }
 
     #endregion //Methods
