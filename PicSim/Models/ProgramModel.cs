@@ -59,12 +59,12 @@ namespace PicSim.Models {
 
       set {
         _timer = value;
-        if (!Ram.GetRegisterBit((int)SFR.TMR0, 3) && (_timer > 255 * CalcPrescaler())) {
-          Ram.ToggleRegisterBit((int)SFR.INTCON, 2, true);
+        if (!Ram.DirectGetRegisterBit((int)SFR.TMR0, 3) && (_timer > 255 * CalcPrescaler())) {
+          Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
           _timer = 0;
         }
         else if (_timer > 255) {
-          Ram.ToggleRegisterBit((int)SFR.INTCON, 2, true);
+          Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
           _timer = 0;
         }
       }
@@ -235,18 +235,18 @@ namespace PicSim.Models {
       ChooseCommand(op);
       _progCounter++;
       Cycles++;
-      _ram.SetRegisterValue((int)SFR.PCL, _progCounter);
-      _tempRB0 = Ram.GetRegisterBit((int)SFR.PORTB, 0);
+      _ram.DirectSetRegisterValue((int)SFR.PCL, _progCounter);
+      _tempRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
       _tempPortB = GetPortBInterruptPins();
     }
 
     private void CheckInterrupt() {
-      bool GIE = Ram.GetRegisterBit((int)SFR.INTCON, 7);
-      bool EEIE = Ram.GetRegisterBit((int)SFR.INTCON, 6);
-      bool T0IE = Ram.GetRegisterBit((int)SFR.INTCON, 5);
-      bool INTE = Ram.GetRegisterBit((int)SFR.INTCON, 4);
-      bool RBIE = Ram.GetRegisterBit((int)SFR.INTCON, 3);
-      bool T0IF = Ram.GetRegisterBit((int)SFR.INTCON, 2);
+      bool GIE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 7);
+      bool EEIE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 6);
+      bool T0IE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 5);
+      bool INTE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 4);
+      bool RBIE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 3);
+      bool T0IF = Ram.DirectGetRegisterBit((int)SFR.INTCON, 2);
       if (GIE) {
         if (T0IE && T0IF) {
           ExecuteInterrupt();
@@ -267,20 +267,20 @@ namespace PicSim.Models {
     }
 
     private void ExecuteInterrupt() {
-      Ram.ToggleRegisterBit((int)SFR.INTCON, 7, false);
+      Ram.DirectToggleRegisterBit((int)SFR.INTCON, 7, false);
       Ram.PushStack(ProgCounter);
       ProgCounter = 0x04;
     }
 
     private int CalcPrescaler() {
       int mask = 0x07;
-      int prescaleValue = Ram.GetRegisterValue((int)SFR.OPTION_REG) & mask;
+      int prescaleValue = Ram.DirectGetRegisterValue((int)SFR.OPTION_REG) & mask;
       return 2 ^ (prescaleValue + 1);
     }
 
     private bool CheckExternalInterrupt() {
-      bool INTEDG = Ram.GetRegisterBit((int)SFR.OPTION_REG, 6);
-      bool currentRB0 = Ram.GetRegisterBit((int)SFR.PORTB, 0);
+      bool INTEDG = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 6);
+      bool currentRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
       if (INTEDG && !_tempRB0 && currentRB0) {
         return true;
       }
@@ -298,7 +298,7 @@ namespace PicSim.Models {
     }
 
     private int GetPortBInterruptPins() {
-      int inputPins = Ram.GetRegisterValue((int)SFR.PORTB) & Ram.GetRegisterValue((int)SFR.TRISB);
+      int inputPins = Ram.DirectGetRegisterValue((int)SFR.PORTB) & Ram.DirectGetRegisterValue((int)SFR.TRISB);
       int result = inputPins & 0xF0;
       return result;
     }
@@ -742,23 +742,23 @@ namespace PicSim.Models {
         opModel.OpType != OperationType.NoArgs &&
         opModel.OpType == OperationType.ByteOrientedF &&
         opModel.IsIndirect) {
-        opModel.Args.Byte1 = Ram.GetRegisterValue((int)SFR.FSR);
+        opModel.Args.Byte1 = Ram.DirectGetRegisterValue((int)SFR.FSR);
         return;
       }
 
       if (opModel.OpType != OperationType.LiteralControl &&
         opModel.OpType != OperationType.NoArgs &&
         opModel.IsIndirect) {
-        opModel.Args.Byte2 = Ram.GetRegisterValue((int)SFR.FSR);
+        opModel.Args.Byte2 = Ram.DirectGetRegisterValue((int)SFR.FSR);
       }
     }
 
     private void CheckCarryBit(int byte1, int byte2) {
       if (byte1 + byte2 > 255) {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 0, true);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 0, true);
       }
       else {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 0, false);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 0, false);
       }
     }
 
@@ -767,28 +767,28 @@ namespace PicSim.Models {
       int lowValue1 = mask & byte1;
       int lowValue2 = mask & byte2;
       if ((lowValue1 + lowValue2) > 15) {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 1, true);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 1, true);
       }
       else {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 1, false);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 1, false);
       }
     }
 
     private void CheckZeroBit(int adress) {
       if (Ram.GetRegisterValue(adress) == 0) {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 2, true);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 2, true);
       }
       else {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 2, false);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 2, false);
       }
     }
 
     private void CheckZeroBit() {
       if (Ram.GetRegisterValue() == 0) {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 2, true);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 2, true);
       }
       else {
-        Ram.ToggleRegisterBit((int)SFR.STATUS, 2, false);
+        Ram.DirectToggleRegisterBit((int)SFR.STATUS, 2, false);
       }
     }
 
