@@ -12,7 +12,7 @@ namespace PicSim.Models {
     private bool _isBreak;
     private int _index;
     private Operation _operation;
-		private OperationType _opType;
+    private OperationType _opType;
     private Arguments _args;
     private bool _isIndirect;
 
@@ -20,61 +20,49 @@ namespace PicSim.Models {
 
     #region Properties
 
-    public bool IsBreak
-    {
-      get
-      {
+    public bool IsBreak {
+      get {
         return _isBreak;
       }
 
-      set
-      {
+      set {
         _isBreak = value;
       }
     }
 
-    public int Index
-    {
-      get
-      {
+    public int Index {
+      get {
         return _index;
       }
     }
 
-    public Operation Operation
-    {
-      get
-      {
+    public Operation Operation {
+      get {
         return _operation;
       }
     }
 
-    public Arguments Args
-    {
-      get
-      {
+    public Arguments Args {
+      get {
         return _args;
       }
     }
 
-		public OperationType OpType {
-			get {
-				return _opType;
-			}
-			set {
-				_opType = value;
-			}
-		}
+    public OperationType OpType {
+      get {
+        return _opType;
+      }
+      set {
+        _opType = value;
+      }
+    }
 
-    public bool IsIndirect
-    {
-      get
-      {
+    public bool IsIndirect {
+      get {
         return _isIndirect;
       }
 
-      set
-      {
+      set {
         _isIndirect = value;
       }
     }
@@ -91,7 +79,7 @@ namespace PicSim.Models {
     #endregion //Constructors
 
     #region Methods
-    
+
     public void SetArgs(bool d, int f) {
       _args = new Arguments(d, f);
     }
@@ -103,7 +91,7 @@ namespace PicSim.Models {
     public void SetArgs(int f) {
       _args = new Arguments(f);
     }
- 
+
     #endregion //Methods
 
   }

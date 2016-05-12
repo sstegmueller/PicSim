@@ -17,51 +17,42 @@ namespace PicSim.ViewModels {
     private string _operationName;
     private string _operationArg1;
     private string _operationArg2;
-		private OperationModel _opModel;
-		private Brush _background;
+    private OperationModel _opModel;
+    private Brush _background;
 
     #endregion //Fields
 
     #region Properties
 
-    public bool IsChecked
-    {
-      get
-      {
+    public bool IsChecked {
+      get {
         return _isChecked;
       }
 
-      set
-      {
+      set {
         _isChecked = value;
         NotifyOfPropertyChange(() => IsChecked);
-				_opModel.IsBreak = value;
+        _opModel.IsBreak = value;
       }
     }
 
-    public string OperationName
-    {
-      get
-      {
+    public string OperationName {
+      get {
         return _operationName;
       }
 
-      set
-      {
+      set {
         _operationName = value;
         NotifyOfPropertyChange(() => OperationName);
       }
     }
 
-    public string OperationArg1
-    {
-      get
-      {
+    public string OperationArg1 {
+      get {
         return _operationArg1;
       }
 
-      set
-      {
+      set {
         if (value != "True" && value != "False") {
           _operationArg1 = Tools.ToHexString(value);
         }
@@ -72,75 +63,69 @@ namespace PicSim.ViewModels {
       }
     }
 
-    public string OperationArg2
-    {
-      get
-      {
+    public string OperationArg2 {
+      get {
         return _operationArg2;
       }
 
-      set
-      {
+      set {
         _operationArg2 = Tools.ToHexString(value);
         NotifyOfPropertyChange(() => OperationArg2);
       }
     }
 
-    public string Index
-    {
-      get
-      {
+    public string Index {
+      get {
         return _index;
       }
 
-      set
-      {
+      set {
         _index = Tools.ToHexString(value);
         NotifyOfPropertyChange(() => Index);
       }
     }
 
-		public Brush Background {
-			get {
-				return _background;
-			}
+    public Brush Background {
+      get {
+        return _background;
+      }
 
-			set {
-				_background = value;
-				NotifyOfPropertyChange(() => Background);
-			}
-		}
+      set {
+        _background = value;
+        NotifyOfPropertyChange(() => Background);
+      }
+    }
 
-		#endregion //Properties
+    #endregion //Properties
 
-		#region Constructors
+    #region Constructors
 
-		public OperationViewModel(OperationModel opModel) {
-			_opModel = opModel;
-			IsChecked = false;
-			if (opModel.OpType == OperationType.ByteOrientedFD) {
-				Index = opModel.Index.ToString();
-				OperationName = opModel.Operation.ToString();
-				OperationArg1 = opModel.Args.Bool1.ToString();
-				OperationArg2 = opModel.Args.Byte2.ToString();
+    public OperationViewModel(OperationModel opModel) {
+      _opModel = opModel;
+      IsChecked = false;
+      if (opModel.OpType == OperationType.ByteOrientedFD) {
+        Index = opModel.Index.ToString();
+        OperationName = opModel.Operation.ToString();
+        OperationArg1 = opModel.Args.Bool1.ToString();
+        OperationArg2 = opModel.Args.Byte2.ToString();
 
-			}
-			if (opModel.OpType == OperationType.ByteOrientedF || opModel.OpType == OperationType.LiteralControl) {
-				Index = opModel.Index.ToString();
-				OperationName = opModel.Operation.ToString();
-				OperationArg1 = opModel.Args.Byte1.ToString();
-			}
-			if (opModel.OpType == OperationType.BitOriented) {
-				Index = opModel.Index.ToString();
-				OperationName = opModel.Operation.ToString();
-				OperationArg1 = opModel.Args.Byte1.ToString();
-				OperationArg2 = opModel.Args.Byte2.ToString();
-			}
-			if (opModel.OpType == OperationType.NoArgs) {
-				Index = opModel.Index.ToString();
-				OperationName = opModel.Operation.ToString();
-			}			
-		}
+      }
+      if (opModel.OpType == OperationType.ByteOrientedF || opModel.OpType == OperationType.LiteralControl) {
+        Index = opModel.Index.ToString();
+        OperationName = opModel.Operation.ToString();
+        OperationArg1 = opModel.Args.Byte1.ToString();
+      }
+      if (opModel.OpType == OperationType.BitOriented) {
+        Index = opModel.Index.ToString();
+        OperationName = opModel.Operation.ToString();
+        OperationArg1 = opModel.Args.Byte1.ToString();
+        OperationArg2 = opModel.Args.Byte2.ToString();
+      }
+      if (opModel.OpType == OperationType.NoArgs) {
+        Index = opModel.Index.ToString();
+        OperationName = opModel.Operation.ToString();
+      }
+    }
 
     #endregion //Constructors
 

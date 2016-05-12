@@ -44,15 +44,12 @@ namespace PicSim.ViewModels {
       }
     }
 
-    public bool OpenFileIsEnabled
-    {
-      get
-      {
+    public bool OpenFileIsEnabled {
+      get {
         return _openFileIsEnabled;
       }
 
-      set
-      {
+      set {
         _openFileIsEnabled = value;
         NotifyOfPropertyChange(() => OpenFileIsEnabled);
       }
@@ -68,7 +65,7 @@ namespace PicSim.ViewModels {
         NotifyOfPropertyChange(() => FileNameContent);
       }
     }
-    
+
     public BindableCollection<OperationViewModel> Operations {
       get {
         return _operations;
@@ -168,15 +165,12 @@ namespace PicSim.ViewModels {
       }
     }
 
-    public bool CanStep
-    {
-      get
-      {
+    public bool CanStep {
+      get {
         return _canStep;
       }
 
-      set
-      {
+      set {
         _canStep = value;
         NotifyOfPropertyChange(() => CanStep);
       }
@@ -275,7 +269,7 @@ namespace PicSim.ViewModels {
       OpenFileIsEnabled = false;
       _worker.RunWorkerAsync();
     }
-    
+
     public void Step() {
       if (_progModel.ProgCounter < _progModel.Operations.Last().Index) {
         UseCommand();

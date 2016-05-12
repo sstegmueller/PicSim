@@ -107,254 +107,202 @@ namespace PicSim.ViewModels {
       }
     }
 
-    public string CarryBitValue
-    {
-      get
-      {
+    public string CarryBitValue {
+      get {
         return _carryBitValue;
       }
 
-      set
-      {
+      set {
         _carryBitValue = value;
         NotifyOfPropertyChange(() => CarryBitValue);
       }
     }
 
-    public bool RA0
-    {
-      get
-      {
+    public bool RA0 {
+      get {
         return _rA0;
       }
 
-      set
-      {
+      set {
         _rA0 = value;
         NotifyOfPropertyChange(() => RA0);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 0);
       }
     }
 
-    public bool RA1
-    {
-      get
-      {
+    public bool RA1 {
+      get {
         return _rA1;
       }
 
-      set
-      {
+      set {
         _rA1 = value;
         NotifyOfPropertyChange(() => RA1);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 1);
       }
     }
 
-    public bool RA2
-    {
-      get
-      {
+    public bool RA2 {
+      get {
         return _rA2;
       }
 
-      set
-      {
+      set {
         _rA2 = value;
         NotifyOfPropertyChange(() => RA2);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 2);
       }
     }
 
-    public bool RA3
-    {
-      get
-      {
+    public bool RA3 {
+      get {
         return _rA3;
       }
 
-      set
-      {
+      set {
         _rA3 = value;
         NotifyOfPropertyChange(() => RA3);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 3);
       }
     }
 
-    public bool RA4
-    {
-      get
-      {
+    public bool RA4 {
+      get {
         return _rA4;
       }
 
-      set
-      {
+      set {
         _rA4 = value;
         NotifyOfPropertyChange(() => RA4);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 4);
       }
     }
 
-    public bool RA5
-    {
-      get
-      {
+    public bool RA5 {
+      get {
         return _rA5;
       }
 
-      set
-      {
+      set {
         _rA5 = value;
         NotifyOfPropertyChange(() => RA5);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 5);
       }
     }
 
-    public bool RA6
-    {
-      get
-      {
+    public bool RA6 {
+      get {
         return _rA6;
       }
 
-      set
-      {
+      set {
         _rA6 = value;
         NotifyOfPropertyChange(() => RA6);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 6);
       }
     }
 
-    public bool RA7
-    {
-      get
-      {
+    public bool RA7 {
+      get {
         return _rA7;
       }
 
-      set
-      {
+      set {
         _rA7 = value;
         NotifyOfPropertyChange(() => RA7);
         _ram.ToggleRegisterBit((int)SFR.PORTA, 7);
       }
     }
 
-    public bool RB0
-    {
-      get
-      {
+    public bool RB0 {
+      get {
         return _rB0;
       }
 
-      set
-      {
+      set {
         _rB0 = value;
         NotifyOfPropertyChange(() => RB0);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 0);
       }
     }
 
-    public bool RB1
-    {
-      get
-      {
+    public bool RB1 {
+      get {
         return _rB1;
       }
 
-      set
-      {
+      set {
         _rB1 = value;
         NotifyOfPropertyChange(() => RB1);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 1);
       }
     }
 
-    public bool RB2
-    {
-      get
-      {
+    public bool RB2 {
+      get {
         return _rB2;
       }
 
-      set
-      {
+      set {
         _rB2 = value;
         NotifyOfPropertyChange(() => RB2);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 2);
       }
     }
 
-    public bool RB3
-    {
-      get
-      {
+    public bool RB3 {
+      get {
         return _rB3;
       }
-
-      set
-      {
+      set {
         _rB3 = value;
         NotifyOfPropertyChange(() => RB3);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 3);
       }
     }
 
-    public bool RB4
-    {
-      get
-      {
+    public bool RB4 {
+      get {
         return _rB4;
       }
 
-      set
-      {
+      set {
         _rB4 = value;
         NotifyOfPropertyChange(() => RB4);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 4);
       }
     }
 
-    public bool RB5
-    {
-      get
-      {
+    public bool RB5 {
+      get {
         return _rB5;
       }
 
-      set
-      {
+      set {
         _rB5 = value;
         NotifyOfPropertyChange(() => RB5);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 5);
       }
     }
 
-    public bool RB6
-    {
-      get
-      {
+    public bool RB6 {
+      get {
         return _rB6;
       }
 
-      set
-      {
+      set {
         _rB6 = value;
         NotifyOfPropertyChange(() => RB6);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 6);
       }
     }
 
-    public bool RB7
-    {
-      get
-      {
+    public bool RB7 {
+      get {
         return _rB7;
       }
 
-      set
-      {
+      set {
         _rB7 = value;
         NotifyOfPropertyChange(() => RB7);
         _ram.ToggleRegisterBit((int)SFR.PORTB, 7);
@@ -371,7 +319,7 @@ namespace PicSim.ViewModels {
     #endregion //Constructors
 
     #region Methods
-    
+
     public void RefreshSfr(RamModel ram, int pc) {
       WRegValue = Tools.ToHexString(ram.WReg);
       FSRValue = Tools.ToHexString(ram.RamArray[(int)SFR.FSR]);
