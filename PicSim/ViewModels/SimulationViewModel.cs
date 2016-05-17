@@ -258,21 +258,29 @@ namespace PicSim.ViewModels {
       }
     }
 
+    private void CheckWatchdog() {
+      if (_progModel.WatchdogAlert) {
+        ResetDevice();
+      }
+    }
+
     private void worker_RunProgram(object sender, DoWorkEventArgs e) {
       if (_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak &&
         _progModel.ProgCounter <= _progModel.Operations.Last().Index) {
         UseCommand();
+        CheckWatchdog();
       }
       while (_progModel.ProgCounter <= _progModel.Operations.Last().Index &&
             !_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
         UseCommand();
+        CheckWatchdog();
         if (_worker.CancellationPending) {
           e.Cancel = true;
           return;
         }
       }
     }
-
+    
     public void OpenFile() {
       // Create OpenFileDialog 
       Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -285,7 +293,7 @@ namespace PicSim.ViewModels {
       if (result == true) {
         // Open document 
         FileNameContent = dlg.SafeFileName;
-        _progModel = new ProgramModel(dlg.FileName);
+        _progModel = new ProgramModel(dlg.FileName, Convert.ToDouble(TimerVM.CrystalFrequency));
         _sFRVM.GiveRamModel(_progModel.Ram);
         ShowOperations();
         RefreshVMs();
@@ -301,17 +309,24 @@ namespace PicSim.ViewModels {
     public void Step() {
       if (_progModel.ProgCounter <= _progModel.Operations.Last().Index) {
         UseCommand();
+        CheckWatchdog();
       }
     }
 
     public void Stop() {
       OpenFileIsEnabled = true;
+      ResetDevice();
+      _worker.CancelAsync();
+    }
+
+    private void ResetDevice() {
       _progModel.Ram = new RamModel();
       _progModel.ProgCounter = 0;
       _progModel.Cycles = 0;
+      _progModel.Watchdog = 0;
+      _progModel.WatchdogAlert = false;
       BrushCurrentOp();
       RefreshVMs();
-      _worker.CancelAsync();
     }
 
     #endregion //Methods

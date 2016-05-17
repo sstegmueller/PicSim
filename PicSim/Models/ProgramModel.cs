@@ -16,8 +16,11 @@ namespace PicSim.Models {
     private int _progCounter;
     private int _cycles = 0;
     private int _timer = 0;
+    private int _watchdog = 0;
+    private double _frequency;
     private bool _tempRB0;
     private int _tempPortB;
+    private bool _watchdogAlert;
 
     #endregion //Fields
 
@@ -59,11 +62,14 @@ namespace PicSim.Models {
 
       set {
         _timer = value;
-        if (!Ram.DirectGetRegisterBit((int)SFR.TMR0, 3) && (_timer > 255 * CalcPrescaler())) {
+        Ram.SetRegisterValue((int)SFR.TMR0, _timer);
+        bool psa = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 3);
+        int prescaler = CalcPrescaler();
+        if (!psa && (_timer > 255 * prescaler)) {
           Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
           _timer = 0;
         }
-        else if (_timer > 255) {
+        else if (_timer > 0xFF) {
           Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
           _timer = 0;
         }
@@ -81,20 +87,62 @@ namespace PicSim.Models {
       }
     }
 
+    public int Watchdog {
+      get {
+        return _watchdog;
+      }
+
+      set {
+        _watchdog = value;
+        bool psa = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 3);
+        int prescaler = CalcPrescaler();
+        if (psa && (Tools.CalculateRuntime(_watchdog, _frequency) > 18000 * prescaler)) {
+          WatchdogAlert = true;
+        }
+        else if(Tools.CalculateRuntime(_watchdog, _frequency) > 18000) {
+          WatchdogAlert = true;
+        }
+      }
+    }
+
+    public bool WatchdogAlert {
+      get {
+        return _watchdogAlert;
+      }
+
+      set {
+        _watchdogAlert = value;
+      }
+    }
+
     #endregion //Properties
 
     #region Constructors
 
-    public ProgramModel(string filePath) {
+    public ProgramModel(string filePath, double CrystalFrequency) {
+      _frequency = CrystalFrequency;
       Dictionary<int, int> opcodes = ParseFile(filePath);
       ObjectifyOPCodes(opcodes);
       ProgCounter = 0;
       _ram = new RamModel();
+      RamInitialization();
     }
+
 
     #endregion //Constructors
 
     #region Methods
+
+    private void RamInitialization() {
+      Ram.DirectSetRegisterValue((int)SFR.PCL, 0);
+      Ram.DirectSetRegisterValue((int)SFR.STATUS, 0x18);
+      Ram.DirectSetRegisterValue((int)SFR.PCLATH, 0);
+      Ram.DirectSetRegisterValue((int)SFR.INTCON, 0);
+      Ram.DirectSetRegisterValue((int)SFR.OPTION_REG, 0xFF);
+      Ram.DirectSetRegisterValue((int)SFR.TRISA, 0x1F);
+      Ram.DirectSetRegisterValue((int)SFR.TRISB, 0xFF);
+      Ram.DirectSetRegisterValue((int)SFR.EECON1, 0);
+    }
 
     private Dictionary<int, int> ParseFile(string filePath) {
       int counter = 0;
@@ -234,10 +282,15 @@ namespace PicSim.Models {
       CheckInterrupt();
       ChooseCommand(op);
       _progCounter++;
-      Cycles++;
+      IncrementCyclesWatchdog();
       _ram.DirectSetRegisterValue((int)SFR.PCL, _progCounter);
       _tempRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
       _tempPortB = GetPortBInterruptPins();
+    }
+
+    private void IncrementCyclesWatchdog() {
+      Cycles++;
+      Watchdog++;
     }
 
     private void CheckInterrupt() {
@@ -275,7 +328,7 @@ namespace PicSim.Models {
     private int CalcPrescaler() {
       int mask = 0x07;
       int prescaleValue = Ram.DirectGetRegisterValue((int)SFR.OPTION_REG) & mask;
-      return 2 ^ (prescaleValue + 1);
+      return (int)(Math.Pow(2, (prescaleValue + 1)));
     }
 
     private bool CheckExternalInterrupt() {
@@ -535,7 +588,7 @@ namespace PicSim.Models {
     }
 
     private void NOPCommand() {
-      Cycles++;
+      IncrementCyclesWatchdog();
     }
 
     private void RLFCommand(OperationModel opModel) {
@@ -663,17 +716,19 @@ namespace PicSim.Models {
       Ram.PushStack(ProgCounter);
       ProgCounter = opModel.Args.Byte1 - 1;
       //TODO: PCLATH logic
-      Cycles++;
+      IncrementCyclesWatchdog();
     }
 
     private void CLRWDTCommand(OperationModel opModel) {
-      //TODO: Watchdog timer logic
+      Ram.ToggleRegisterBit((int)SFR.STATUS, 3, true);
+      Ram.ToggleRegisterBit((int)SFR.STATUS, 4, true);
+      Watchdog = 0;
     }
 
     private void GOTOCommand(OperationModel opModel) {
       ProgCounter = opModel.Args.Byte1 - 1;
       //TODO: PCLATH logic
-      Cycles++;
+      IncrementCyclesWatchdog();
     }
 
     private void IORLWCommand(OperationModel opModel) {
@@ -691,18 +746,18 @@ namespace PicSim.Models {
     private void RETFIECommand(OperationModel opModel) {
       ProgCounter = Ram.PopStack();
       Ram.ToggleRegisterBit((int)SFR.INTCON, 7, true);
-      Cycles++;
+      IncrementCyclesWatchdog();
     }
 
     private void RETLWCommand(OperationModel opModel) {
       Ram.SetRegisterValue(opModel.Args.Byte1);
       ProgCounter = Ram.PopStack();
-      Cycles++;
+      IncrementCyclesWatchdog();
     }
 
     private void RETURNCommand(OperationModel opModel) {
       ProgCounter = Ram.PopStack();
-      Cycles++;
+      IncrementCyclesWatchdog();
     }
 
     private void SLEEPCommand(OperationModel opModel) {

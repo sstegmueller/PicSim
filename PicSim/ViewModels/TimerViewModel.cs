@@ -53,8 +53,8 @@ namespace PicSim.ViewModels {
 
     public void RefreshTime(int cycles) {
       try {
-        double factor = (Convert.ToDouble(CrystalFrequency));
-        Runtime = ((cycles / factor) * 4).ToString();
+        double frequency = (Convert.ToDouble(CrystalFrequency));
+        Runtime = Tools.CalculateRuntime(cycles, frequency).ToString();
       }
       catch {
         Runtime = "NaN";

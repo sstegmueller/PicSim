@@ -60,6 +60,10 @@ namespace PicSim {
       return ram;
     }
 
+    public static double CalculateRuntime(int cycles, double frequency) {
+      return ((cycles / frequency) * 4);
+    }
+
     #endregion //Methods
 
   }
