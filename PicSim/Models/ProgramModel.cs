@@ -62,14 +62,15 @@ namespace PicSim.Models {
 
       set {
         _timer = value;
-        Ram.SetRegisterValue((int)SFR.TMR0, _timer);
         bool psa = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 3);
         int prescaler = CalcPrescaler();
         if (!psa && (_timer > 255 * prescaler)) {
+          Ram.SetRegisterValue((int)SFR.TMR0, _timer / prescaler);
           Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
           _timer = 0;
         }
         else if (_timer > 0xFF) {
+          Ram.SetRegisterValue((int)SFR.TMR0, _timer);
           Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
           _timer = 0;
         }
@@ -96,7 +97,8 @@ namespace PicSim.Models {
         _watchdog = value;
         bool psa = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 3);
         int prescaler = CalcPrescaler();
-        if (psa && (Tools.CalculateRuntime(_watchdog, _frequency) > 18000 * prescaler)) {
+        double watchdogRuntime = Tools.CalculateRuntime(_watchdog, _frequency);
+        if (psa && watchdogRuntime > 18000 * prescaler) {
           WatchdogAlert = true;
         }
         else if(Tools.CalculateRuntime(_watchdog, _frequency) > 18000) {
@@ -121,6 +123,7 @@ namespace PicSim.Models {
 
     public ProgramModel(string filePath, double CrystalFrequency) {
       _frequency = CrystalFrequency;
+      _watchdogAlert = false;
       Dictionary<int, int> opcodes = ParseFile(filePath);
       ObjectifyOPCodes(opcodes);
       ProgCounter = 0;

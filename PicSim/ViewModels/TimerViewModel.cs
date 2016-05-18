@@ -45,6 +45,7 @@ namespace PicSim.ViewModels {
 
     public TimerViewModel() {
       Runtime = "0";
+      CrystalFrequency = "4";
     }
 
     #endregion //Constructors
