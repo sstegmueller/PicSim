@@ -259,7 +259,10 @@ namespace PicSim.ViewModels {
     }
 
     private void CheckWatchdog() {
-      if (_progModel.WatchdogAlert) {
+      if (_progModel.WatchdogAlert && _progModel.Sleeps) {
+        TimeoutReset();
+      }
+      else if (_progModel.WatchdogAlert) {
         WatchdogReset();
       }
     }
@@ -324,7 +327,6 @@ namespace PicSim.ViewModels {
       _progModel.ProgCounter = 0;
       _progModel.Cycles = 0;
       _progModel.Watchdog = 0;
-      _progModel.WatchdogAlert = false;
       BrushCurrentOp();
       RefreshVMs();
     }
@@ -341,6 +343,14 @@ namespace PicSim.ViewModels {
       _progModel.Ram.DirectSetRegisterValue((int)SFR.PCLATH, 0);
       int newIntconRegister = _progModel.Ram.GetRegisterValue((int)SFR.INTCON) & 0x01;
       _progModel.Ram.DirectSetRegisterValue((int)SFR.INTCON, newIntconRegister);
+      _progModel.WatchdogAlert = false;
+    }
+
+    private void TimeoutReset() {
+      _progModel.Ram.DirectToggleRegisterBit((int)SFR.STATUS, 3, false);
+      _progModel.Ram.DirectToggleRegisterBit((int)SFR.STATUS, 4, false);
+      _progModel.Sleeps = false;
+      _progModel.WatchdogAlert = false;
     }
 
     #endregion //Methods
