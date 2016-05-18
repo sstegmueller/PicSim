@@ -43,6 +43,7 @@ namespace PicSim.Models {
 
       set {
         _progCounter = value;
+        _ram.DirectSetRegisterValue((int)SFR.PCL, _progCounter);
       }
     }
 
@@ -101,7 +102,7 @@ namespace PicSim.Models {
         if (psa && watchdogRuntime > 18000 * prescaler) {
           WatchdogAlert = true;
         }
-        else if(Tools.CalculateRuntime(_watchdog, _frequency) > 18000) {
+        else if(watchdogRuntime > 18000) {
           WatchdogAlert = true;
         }
       }
@@ -286,7 +287,6 @@ namespace PicSim.Models {
       ChooseCommand(op);
       _progCounter++;
       IncrementCyclesWatchdog();
-      _ram.DirectSetRegisterValue((int)SFR.PCL, _progCounter);
       _tempRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
       _tempPortB = GetPortBInterruptPins();
     }

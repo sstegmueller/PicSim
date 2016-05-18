@@ -260,7 +260,7 @@ namespace PicSim.ViewModels {
 
     private void CheckWatchdog() {
       if (_progModel.WatchdogAlert) {
-        ResetDevice();
+        WatchdogReset();
       }
     }
 
@@ -327,6 +327,20 @@ namespace PicSim.ViewModels {
       _progModel.WatchdogAlert = false;
       BrushCurrentOp();
       RefreshVMs();
+    }
+
+    private void WatchdogReset() {
+      _progModel.ProgCounter = 0;
+      int mask = 0x07;
+      int tempStatusRegister = _progModel.Ram.GetRegisterValue((int)SFR.STATUS) & mask;
+      int newStatusRegister = tempStatusRegister | 0x08;
+      _progModel.Ram.DirectSetRegisterValue((int)SFR.STATUS, newStatusRegister);
+      _progModel.Ram.DirectSetRegisterValue((int)SFR.OPTION_REG, 0xFF);
+      _progModel.Ram.DirectSetRegisterValue((int)SFR.TRISA, 0xFF);
+      _progModel.Ram.DirectSetRegisterValue((int)SFR.TRISB, 0xFF);
+      _progModel.Ram.DirectSetRegisterValue((int)SFR.PCLATH, 0);
+      int newIntconRegister = _progModel.Ram.GetRegisterValue((int)SFR.INTCON) & 0x01;
+      _progModel.Ram.DirectSetRegisterValue((int)SFR.INTCON, newIntconRegister);
     }
 
     #endregion //Methods
