@@ -156,7 +156,7 @@ namespace PicSim.Models {
     public int PopStack() {
       return _stack.Pop();
     }
-
+    
     #endregion //Methods
   }
 }
