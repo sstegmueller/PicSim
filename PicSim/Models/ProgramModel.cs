@@ -313,11 +313,7 @@ namespace PicSim.Models {
     private void ChangeTimerSettings(int prescaler) {
       Ram.SetRegisterValue((int)SFR.TMR0, _timer / prescaler);
       _timer = 0;
-      bool GIE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 7);
-      bool T0IE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 5);
-      if(GIE && T0IE) {
-        Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
-      }
+      Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
     }
 
     private void IncrementCyclesWatchdog() {
