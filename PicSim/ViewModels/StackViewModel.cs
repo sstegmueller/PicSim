@@ -38,7 +38,7 @@ namespace PicSim.ViewModels {
     public void RefreshStack(Stack<int> stackModel) {
       Stack.Clear();
       foreach(var item in stackModel) {
-        int correctData = item + 1;
+        int correctData = item;
         Stack.Add(correctData.ToString());
       }
     }

@@ -67,10 +67,11 @@ namespace PicSim.Models {
         _timer = value;
         bool psa = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 3);
         int prescaler = CalcPrescaler();
-        if (!psa && (_timer > 255 * prescaler)) {
+        bool T0CS = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
+        if (!psa && (_timer > 255 * prescaler && !T0CS)) {
           ChangeTimerSettings(prescaler);
         }
-        else if (_timer > 0xFF) {
+        else if (_timer > 0xFF && !T0CS) {
           ChangeTimerSettings(prescaler);
         }
       }
@@ -362,10 +363,11 @@ namespace PicSim.Models {
     private bool CheckExternalInterrupt() {
       bool INTEDG = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 6);
       bool currentRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
-      if (INTEDG && !_tempRB0 && currentRB0) {
+      bool T0IF = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
+      if (INTEDG && !_tempRB0 && currentRB0 && T0IF) {
         return true;
       }
-      if (!INTEDG && _tempRB0 && !currentRB0) {
+      if (!INTEDG && _tempRB0 && !currentRB0 && T0IF) {
         return true;
       }
       return false;
@@ -562,8 +564,15 @@ namespace PicSim.Models {
     }
 
     private void DECFSZCommand(OperationModel opModel) {
-      DECFCommand(opModel);
-      if (Ram.GetRegisterBit((int)SFR.STATUS, 2)) {
+      int regValue = Ram.GetRegisterValue(opModel.Args.Byte2);
+      int dec = regValue - 1;
+      if (opModel.Args.Bool1) {
+        Ram.SetRegisterValue(opModel.Args.Byte2, dec);
+      }
+      else {
+        Ram.SetRegisterValue(dec);
+      }
+      if (Ram.GetRegisterValue(opModel.Args.Byte2) == 0) {
         NOPCommand();
         ProgCounter++;
       }
@@ -582,8 +591,14 @@ namespace PicSim.Models {
     }
 
     private void INCFSZCommand(OperationModel opModel) {
-      INCFCommand(opModel);
-      if (Ram.GetRegisterBit((int)SFR.STATUS, 2)) {
+      int inc = Ram.GetRegisterValue(opModel.Args.Byte2) + 1;
+      if (opModel.Args.Bool1) {
+        Ram.SetRegisterValue(opModel.Args.Byte2, inc);
+      }
+      else {
+        Ram.SetRegisterValue(inc);
+      }
+      if (Ram.GetRegisterValue(opModel.Args.Byte2) == 0) {
         NOPCommand();
         ProgCounter++;
       }
