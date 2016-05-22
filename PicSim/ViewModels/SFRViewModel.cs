@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using PicSim.Models;
 using System.Data;
+using System.ComponentModel;
 
 namespace PicSim.ViewModels {
   class SfrViewModel : PropertyChangedBase {
@@ -19,7 +20,9 @@ namespace PicSim.ViewModels {
     private string _pCValue;
     private string _statusValue;
     private string _carryBitValue;
+    private ProgramModel _prog;
     private RamModel _ram;
+    private RamViewModel _ramVM;
     private bool _rA0;
     private bool _rA1;
     private bool _rA2;
@@ -174,7 +177,21 @@ namespace PicSim.ViewModels {
       set {
         _rA4 = value;
         NotifyOfPropertyChange(() => RA4);
+        bool T0CS = _ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
+        if (T0CS) {
+          bool T0SE = _ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 4);
+          bool rA4 = _ram.DirectGetRegisterBit((int)SFR.PORTA, 4);
+          _prog.IsExternClock = true;
+          if (T0SE && rA4 && !value) {
+            _prog.Timer++;
+          }
+          if (!T0SE && !rA4 && value) {
+            _prog.Timer++;
+          }
+          _prog.IsExternClock = false;
+        }
         _ram.ToggleRegisterBit((int)SFR.PORTA, 4);
+        _ramVM.RefreshDataTable(_prog.Ram.RamArray);
       }
     }
 
@@ -319,6 +336,7 @@ namespace PicSim.ViewModels {
     #endregion //Constructors
 
     #region Methods
+    
 
     public void RefreshSfr(RamModel ram, int pc) {
       WRegValue = Tools.ToHexString(ram.WReg);
@@ -330,8 +348,10 @@ namespace PicSim.ViewModels {
       CarryBitValue = Tools.ToHexString(ram.GetRegisterBit((int)SFR.STATUS, 0));
     }
 
-    public void GiveRamModel(RamModel ram) {
-      _ram = ram;
+    public void GiveModels(ProgramModel prog, RamViewModel ramVM) {
+      _prog = prog;
+      _ram = prog.Ram;
+      _ramVM = ramVM;
     }
 
     #endregion //Methods

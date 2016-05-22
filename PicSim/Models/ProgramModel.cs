@@ -16,6 +16,7 @@ namespace PicSim.Models {
     private int _progCounter;
     private int _cycles = 0;
     private int _timer = 0;
+    private bool _isExternClock;
     private int _watchdog = 0;
     private double _frequency;
     private bool _tempRB0;
@@ -58,21 +59,24 @@ namespace PicSim.Models {
       }
     }
 
-    private int Timer {
+    public int Timer {
       get {
         return _timer;
       }
 
       set {
-        _timer = value;
         bool psa = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 3);
         int prescaler = CalcPrescaler();
         bool T0CS = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
-        if (!psa && (_timer > 255 * prescaler && !T0CS)) {
-          ChangeTimerSettings(prescaler);
+        if (!T0CS) {
+          _timer = value;          
+          CheckTimerOverflow(psa, prescaler);
         }
-        else if (_timer > 0xFF && !T0CS) {
-          ChangeTimerSettings(prescaler);
+        else {
+          if (IsExternClock) {
+            _timer = value;
+          }
+          CheckTimerOverflow(psa, prescaler);
         }
       }
     }
@@ -126,6 +130,16 @@ namespace PicSim.Models {
 
       set {
         _sleeps = value;
+      }
+    }
+
+    public bool IsExternClock {
+      get {
+        return _isExternClock;
+      }
+
+      set {
+        _isExternClock = value;
       }
     }
 
@@ -312,8 +326,8 @@ namespace PicSim.Models {
     }
 
     private void ChangeTimerSettings(int prescaler) {
-      Ram.SetRegisterValue((int)SFR.TMR0, _timer / prescaler);
       _timer = 0;
+      Ram.DirectSetRegisterValue((int)SFR.TMR0, _timer);
       Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
     }
 
@@ -333,7 +347,7 @@ namespace PicSim.Models {
         if (T0IE && T0IF) {
           ExecuteInterrupt();
         }
-        if (INTE && CheckExternalInterrupt()) {
+        if (INTE && CheckExternalRB0Interrupt()) {
           Ram.ToggleRegisterBit((int)SFR.INTCON, 1, true);
           ExecuteInterrupt();
         }
@@ -360,7 +374,28 @@ namespace PicSim.Models {
       return (int)(Math.Pow(2, (prescaleValue + 1)));
     }
 
-    private bool CheckExternalInterrupt() {
+    private void CheckTimerOverflow(bool psa, int prescaler) {
+      if (!psa && (_timer > 255 * prescaler)) {
+        ChangeTimerSettings(prescaler);
+      }
+      else if (psa && _timer > 0xFF) {
+        ChangeTimerSettings(prescaler);
+      }
+      else {
+        IncrementTimer(psa, prescaler);
+      }
+    }
+
+    private void IncrementTimer(bool psa, int prescaler) {
+      if (psa) {
+        Ram.DirectSetRegisterValue((int)SFR.TMR0, _timer);
+      }
+      else {
+        Ram.DirectSetRegisterValue((int)SFR.TMR0, _timer / prescaler);
+      }
+    }
+
+    private bool CheckExternalRB0Interrupt() {
       bool INTEDG = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 6);
       bool currentRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
       bool T0IF = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
@@ -568,13 +603,17 @@ namespace PicSim.Models {
       int dec = regValue - 1;
       if (opModel.Args.Bool1) {
         Ram.SetRegisterValue(opModel.Args.Byte2, dec);
+        if (Ram.GetRegisterValue(opModel.Args.Byte2) == 0) {
+          NOPCommand();
+          ProgCounter++;
+        }
       }
       else {
         Ram.SetRegisterValue(dec);
-      }
-      if (Ram.GetRegisterValue(opModel.Args.Byte2) == 0) {
-        NOPCommand();
-        ProgCounter++;
+        if (Ram.GetRegisterValue() == 0) {
+          NOPCommand();
+          ProgCounter++;
+        }
       }
     }
 
@@ -594,13 +633,17 @@ namespace PicSim.Models {
       int inc = Ram.GetRegisterValue(opModel.Args.Byte2) + 1;
       if (opModel.Args.Bool1) {
         Ram.SetRegisterValue(opModel.Args.Byte2, inc);
+        if (Ram.GetRegisterValue(opModel.Args.Byte2) == 0) {
+          NOPCommand();
+          ProgCounter++;
+        }
       }
       else {
         Ram.SetRegisterValue(inc);
-      }
-      if (Ram.GetRegisterValue(opModel.Args.Byte2) == 0) {
-        NOPCommand();
-        ProgCounter++;
+        if (Ram.GetRegisterValue() == 0) {
+          NOPCommand();
+          ProgCounter++;
+        }
       }
     }
 
@@ -706,14 +749,16 @@ namespace PicSim.Models {
     }
 
     private void XORWFCommand(OperationModel opModel) {
-      int xorVal = Ram.GetRegisterValue(opModel.Args.Byte2) ^ Ram.GetRegisterValue();
+      int wValue = Ram.GetRegisterValue();
+      int regValue = Ram.GetRegisterValue(opModel.Args.Byte2);
+      int xorVal = regValue ^ wValue;
       if (opModel.Args.Bool1) {
         Ram.SetRegisterValue(opModel.Args.Byte2, xorVal);
-        CheckZeroBit(Ram.GetRegisterValue(opModel.Args.Byte2));
+        CheckZeroBit(opModel.Args.Byte2);
       }
       else {
         Ram.SetRegisterValue(xorVal);
-        CheckZeroBit(Ram.GetRegisterValue());
+        CheckZeroBit();
       }
     }
 

@@ -297,7 +297,7 @@ namespace PicSim.ViewModels {
         // Open document 
         FileNameContent = dlg.SafeFileName;
         _progModel = new ProgramModel(dlg.FileName, Convert.ToDouble(TimerVM.CrystalFrequency));
-        _sFRVM.GiveRamModel(_progModel.Ram);
+        _sFRVM.GiveModels(_progModel, _ramVM);
         ShowOperations();
         RefreshVMs();
         CanStep = true;
