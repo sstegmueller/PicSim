@@ -324,6 +324,7 @@ namespace PicSim.ViewModels {
 
     private void ResetDevice() {
       _progModel.Ram = new RamModel();
+      _progModel.RamInitialization();
       _progModel.ProgCounter = 0;
       _progModel.Cycles = 0;
       _progModel.Watchdog = 0;

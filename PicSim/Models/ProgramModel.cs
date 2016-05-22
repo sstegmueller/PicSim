@@ -39,12 +39,13 @@ namespace PicSim.Models {
 
     public int ProgCounter {
       get {
-        return _progCounter;
+        int pC = (_progCounter & 0xFF00) | Ram.GetRegisterValue((int)SFR.PCL);
+        return pC;
       }
 
       set {
+        _ram.DirectSetRegisterValue((int)SFR.PCL, value & 0xFF);
         _progCounter = value;
-        _ram.DirectSetRegisterValue((int)SFR.PCL, _progCounter);
       }
     }
 
@@ -145,18 +146,7 @@ namespace PicSim.Models {
     #endregion //Constructors
 
     #region Methods
-
-    private void RamInitialization() {
-      Ram.DirectSetRegisterValue((int)SFR.PCL, 0);
-      Ram.DirectSetRegisterValue((int)SFR.STATUS, 0x18);
-      Ram.DirectSetRegisterValue((int)SFR.PCLATH, 0);
-      Ram.DirectSetRegisterValue((int)SFR.INTCON, 0);
-      Ram.DirectSetRegisterValue((int)SFR.OPTION_REG, 0xFF);
-      Ram.DirectSetRegisterValue((int)SFR.TRISA, 0x1F);
-      Ram.DirectSetRegisterValue((int)SFR.TRISB, 0xFF);
-      Ram.DirectSetRegisterValue((int)SFR.EECON1, 0);
-    }
-
+    
     private Dictionary<int, int> ParseFile(string filePath) {
       int counter = 0;
       string line;
@@ -289,6 +279,17 @@ namespace PicSim.Models {
       }
     }
 
+    public void RamInitialization() {
+      Ram.DirectSetRegisterValue((int)SFR.PCL, 0);
+      Ram.DirectSetRegisterValue((int)SFR.STATUS, 0x18);
+      Ram.DirectSetRegisterValue((int)SFR.PCLATH, 0);
+      Ram.DirectSetRegisterValue((int)SFR.INTCON, 0);
+      Ram.DirectSetRegisterValue((int)SFR.OPTION_REG, 0xFF);
+      Ram.DirectSetRegisterValue((int)SFR.TRISA, 0x1F);
+      Ram.DirectSetRegisterValue((int)SFR.TRISB, 0xFF);
+      Ram.DirectSetRegisterValue((int)SFR.EECON1, 0);
+    }
+
     public void ExecuteCommand(int index) {
       if (Sleeps) {
         Watchdog++;
@@ -302,8 +303,8 @@ namespace PicSim.Models {
       OperationModel op = GetOpByIndex(index);
       UseFSRValue(op);
       CheckInterrupt();
+      ProgCounter++;
       ChooseCommand(op);
-      _progCounter++;
       IncrementCyclesWatchdog();
       _tempRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
       _tempPortB = GetPortBInterruptPins();
@@ -312,11 +313,7 @@ namespace PicSim.Models {
     private void ChangeTimerSettings(int prescaler) {
       Ram.SetRegisterValue((int)SFR.TMR0, _timer / prescaler);
       _timer = 0;
-      bool GIE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 7);
-      bool T0IE = Ram.DirectGetRegisterBit((int)SFR.INTCON, 5);
-      if(GIE && T0IE) {
-        Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
-      }
+      Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
     }
 
     private void IncrementCyclesWatchdog() {
@@ -568,7 +565,7 @@ namespace PicSim.Models {
       DECFCommand(opModel);
       if (Ram.GetRegisterBit((int)SFR.STATUS, 2)) {
         NOPCommand();
-        _progCounter++;
+        ProgCounter++;
       }
     }
 
@@ -588,7 +585,7 @@ namespace PicSim.Models {
       INCFCommand(opModel);
       if (Ram.GetRegisterBit((int)SFR.STATUS, 2)) {
         NOPCommand();
-        _progCounter++;
+        ProgCounter++;
       }
     }
 
@@ -745,11 +742,10 @@ namespace PicSim.Models {
 
     private void CALLCommand(OperationModel opModel) {
       Ram.PushStack(ProgCounter);
-      ProgCounter = opModel.Args.Byte1 - 1;
-      //TODO: PCLATH logic
+      ProgCounter = opModel.Args.Byte1 & 0x03FF;
       IncrementCyclesWatchdog();
     }
-
+    
     private void CLRWDTCommand(OperationModel opModel) {
       Ram.ToggleRegisterBit((int)SFR.STATUS, 3, true);
       Ram.ToggleRegisterBit((int)SFR.STATUS, 4, true);
@@ -757,8 +753,7 @@ namespace PicSim.Models {
     }
 
     private void GOTOCommand(OperationModel opModel) {
-      ProgCounter = opModel.Args.Byte1 - 1;
-      //TODO: PCLATH logic
+      ProgCounter = opModel.Args.Byte1 & 0x03FF;
       IncrementCyclesWatchdog();
     }
 
