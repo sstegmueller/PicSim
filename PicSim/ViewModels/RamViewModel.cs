@@ -44,11 +44,13 @@ namespace PicSim.ViewModels {
       int column = 0;
       int row = 0;
       for (int register = 0; register < ram.Length; register++) {
-        Ram.Rows[row].SetField(column + 1, Tools.ToHexString(ram[register]));
-        column++;
-        if (column >= 8) {
-          column = 0;
-          row++;
+        lock (Ram) {
+          Ram.Rows[row].SetField(column + 1, Tools.ToHexString(ram[register]));
+          column++;
+          if (column >= 8) {
+            column = 0;
+            row++;
+          }
         }
       }
     }

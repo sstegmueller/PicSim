@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using PicSim.Models;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.Threading;
 
 namespace PicSim.ViewModels {
   class SimulationViewModel : Screen {
@@ -29,6 +30,9 @@ namespace PicSim.ViewModels {
     private TimerViewModel _timerVM;
     private string _ramName;
     private readonly BackgroundWorker _worker = new BackgroundWorker();
+    private Task _runProgramTask;
+    CancellationTokenSource _tokenSource;
+    CancellationToken _cancellationToken; 
     private bool _canStep;
 
     #endregion //Fields
@@ -217,8 +221,6 @@ namespace PicSim.ViewModels {
       SfrVM = new SfrViewModel();
       StackVM = new StackViewModel();
       TimerVM = new TimerViewModel();
-      _worker.DoWork += worker_RunProgram;
-      _worker.WorkerSupportsCancellation = true;
     }
 
     #endregion //Constructors
@@ -267,7 +269,7 @@ namespace PicSim.ViewModels {
       }
     }
 
-    private void worker_RunProgram(object sender, DoWorkEventArgs e) {
+    private void RunProgram() {
       if (_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak &&
         _progModel.ProgCounter <= _progModel.Operations.Last().Index) {
         UseCommand();
@@ -277,9 +279,8 @@ namespace PicSim.ViewModels {
             !_progModel.GetOpByIndex(_progModel.ProgCounter).IsBreak) {
         UseCommand();
         CheckWatchdog();
-        if (_worker.CancellationPending) {
-          e.Cancel = true;
-          return;
+        if (_cancellationToken.IsCancellationRequested) {
+          break;
         }
       }
     }
@@ -306,7 +307,10 @@ namespace PicSim.ViewModels {
 
     public void Start() {
       OpenFileIsEnabled = false;
-      _worker.RunWorkerAsync();
+      _tokenSource = new CancellationTokenSource();
+      _cancellationToken = _tokenSource.Token;
+      _runProgramTask = new Task(RunProgram);
+      _runProgramTask.Start();
     }
 
     public void Step() {
@@ -319,7 +323,7 @@ namespace PicSim.ViewModels {
     public void Stop() {
       OpenFileIsEnabled = true;
       ResetDevice();
-      _worker.CancelAsync();
+      _tokenSource.Cancel();
     }
 
     private void ResetDevice() {

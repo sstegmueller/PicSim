@@ -23,6 +23,7 @@ namespace PicSim.ViewModels {
     private ProgramModel _prog;
     private RamModel _ram;
     private RamViewModel _ramVM;
+    private Task _rA4Task;
     private bool _rA0;
     private bool _rA1;
     private bool _rA2;
@@ -175,24 +176,28 @@ namespace PicSim.ViewModels {
       }
 
       set {
-        _rA4 = value;
-        NotifyOfPropertyChange(() => RA4);
-        bool T0CS = _ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
-        if (T0CS) {
-          bool T0SE = _ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 4);
-          bool rA4 = _ram.DirectGetRegisterBit((int)SFR.PORTA, 4);
-          _prog.IsExternClock = true;
-          if (T0SE && rA4 && !value) {
-            _prog.Timer++;
-          }
-          if (!T0SE && !rA4 && value) {
-            _prog.Timer++;
-          }
-          _prog.IsExternClock = false;
-        }
-        _ram.ToggleRegisterBit((int)SFR.PORTA, 4);
-        _ramVM.RefreshDataTable(_prog.Ram.RamArray);
+        _rA4Task = Task.Factory.StartNew(()=>TimerClockMode(value));
       }
+    }
+
+    private void TimerClockMode(bool value) {
+      _rA4 = value;
+      NotifyOfPropertyChange(() => RA4);
+      bool T0CS = _ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
+      if (T0CS) {
+        bool T0SE = _ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 4);
+        bool rA4 = _ram.DirectGetRegisterBit((int)SFR.PORTA, 4);
+        _prog.IsExternClock = true;
+        if (T0SE && rA4 && !value) {
+          _prog.Timer++;
+        }
+        if (!T0SE && !rA4 && value) {
+          _prog.Timer++;
+        }
+        _prog.IsExternClock = false;
+      }
+      _ram.ToggleRegisterBit((int)SFR.PORTA, 4);
+      _ramVM.RefreshDataTable(_prog.Ram.RamArray);
     }
 
     public bool RA5 {
