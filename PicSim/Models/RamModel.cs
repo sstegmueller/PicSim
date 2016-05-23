@@ -94,6 +94,9 @@ namespace PicSim.Models {
         }
         else {
           _ramArray[adress] = (byte)(_ramArray[adress] & ~(mask));
+          if (IsMirroredRegister(adress)) {
+            _ramArray[adress + 0x80] = (byte)(_ramArray[adress] & ~(mask));
+          }
         }
       }
     }
