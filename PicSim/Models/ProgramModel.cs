@@ -69,12 +69,12 @@ namespace PicSim.Models {
         int prescaler = CalcPrescaler();
         bool T0CS = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
         if (!T0CS) {
-          _timer = value;          
+          _timer++;          
           CheckTimerOverflow(psa, prescaler);
         }
         else {
           if (IsExternClock) {
-            _timer = value;
+            _timer++;
           }
           CheckTimerOverflow(psa, prescaler);
         }
@@ -305,19 +305,19 @@ namespace PicSim.Models {
       Ram.DirectSetRegisterValue((int)SFR.EECON1, 0);
     }
 
-    public void ExecuteCommand(int index) {
+    public void ExecuteCommand() {
       if (Sleeps) {
         Watchdog++;
       }
       else {
-        ExecuteNormal(index);
+        ExecuteNormal();
       }
     }
 
-    private void ExecuteNormal(int index) {
-      OperationModel op = GetOpByIndex(index);
-      UseFSRValue(op);
+    private void ExecuteNormal() {
       CheckInterrupt();
+      OperationModel op = GetOpByIndex(ProgCounter);
+      UseFSRValue(op);
       ProgCounter++;
       ChooseCommand(op);
       IncrementCyclesWatchdog();
@@ -365,7 +365,7 @@ namespace PicSim.Models {
     private void ExecuteInterrupt() {
       Ram.DirectToggleRegisterBit((int)SFR.INTCON, 7, false);
       Ram.PushStack(ProgCounter);
-      ProgCounter = 0x04;
+      ProgCounter = 0x03;
     }
 
     private int CalcPrescaler() {
@@ -398,11 +398,10 @@ namespace PicSim.Models {
     private bool CheckExternalRB0Interrupt() {
       bool INTEDG = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 6);
       bool currentRB0 = Ram.DirectGetRegisterBit((int)SFR.PORTB, 0);
-      bool T0IF = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
-      if (INTEDG && !_tempRB0 && currentRB0 && T0IF) {
+      if (INTEDG && !_tempRB0 && currentRB0) {
         return true;
       }
-      if (!INTEDG && _tempRB0 && !currentRB0 && T0IF) {
+      if (!INTEDG && _tempRB0 && !currentRB0) {
         return true;
       }
       return false;

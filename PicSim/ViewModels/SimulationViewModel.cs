@@ -237,7 +237,7 @@ namespace PicSim.ViewModels {
     }
 
     private void UseCommand() {
-      _progModel.ExecuteCommand(_progModel.ProgCounter);
+      _progModel.ExecuteCommand();
       BrushCurrentOp();
       RefreshVMs();
     }
