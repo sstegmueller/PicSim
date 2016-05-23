@@ -16,6 +16,7 @@ namespace PicSim.Models {
     private int _progCounter;
     private int _cycles = 0;
     private int _timer = 0;
+    private int _timerPrescaler;
     private bool _isExternClock;
     private int _watchdog = 0;
     private double _frequency;
@@ -61,23 +62,35 @@ namespace PicSim.Models {
 
     public int Timer {
       get {
+        _timer = Ram.DirectGetRegisterValue((int)SFR.TMR0);
         return _timer;
       }
 
       set {
         bool psa = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 3);
-        int prescaler = CalcPrescaler();
+        int prescaler = 0;
+        if (!psa){
+          prescaler = CalcPrescaler();
+        }
         bool T0CS = Ram.DirectGetRegisterBit((int)SFR.OPTION_REG, 5);
         if (!T0CS) {
-          _timer++;          
-          CheckTimerOverflow(psa, prescaler);
+          _timerPrescaler++;
+          if(_timerPrescaler >= prescaler) {
+            _timerPrescaler = 0;
+            _timer++;
+          }          
+          CheckTimerOverflow();
         }
         else {
           if (IsExternClock) {
-            _timer++;
+            _timerPrescaler++;
+            if (_timerPrescaler >= prescaler) {
+              _timer++;
+            }
           }
-          CheckTimerOverflow(psa, prescaler);
+          CheckTimerOverflow();
         }
+        Ram.DirectSetRegisterValue((int)SFR.TMR0, _timer);
       }
     }
     
@@ -88,7 +101,7 @@ namespace PicSim.Models {
 
       set {
         _cycles = value;
-        Timer = value;
+        Timer++;
       }
     }
 
@@ -325,9 +338,8 @@ namespace PicSim.Models {
       _tempPortB = GetPortBInterruptPins();
     }
 
-    private void ChangeTimerSettings(int prescaler) {
+    private void ChangeTimerSettings() {
       _timer = 0;
-      Ram.DirectSetRegisterValue((int)SFR.TMR0, _timer);
       Ram.DirectToggleRegisterBit((int)SFR.INTCON, 2, true);
     }
 
@@ -374,24 +386,9 @@ namespace PicSim.Models {
       return (int)(Math.Pow(2, (prescaleValue + 1)));
     }
 
-    private void CheckTimerOverflow(bool psa, int prescaler) {
-      if (!psa && (_timer > 255 * prescaler)) {
-        ChangeTimerSettings(prescaler);
-      }
-      else if (psa && _timer > 0xFF) {
-        ChangeTimerSettings(prescaler);
-      }
-      else {
-        IncrementTimer(psa, prescaler);
-      }
-    }
-
-    private void IncrementTimer(bool psa, int prescaler) {
-      if (psa) {
-        Ram.DirectSetRegisterValue((int)SFR.TMR0, _timer);
-      }
-      else {
-        Ram.DirectSetRegisterValue((int)SFR.TMR0, _timer / prescaler);
+    private void CheckTimerOverflow() {
+      if (_timer > 0xFF) {
+        ChangeTimerSettings();
       }
     }
 
