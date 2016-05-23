@@ -8,18 +8,18 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.15*"/>
-            <ColumnDefinition Width="0.85*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0.05*"/>
-            <RowDefinition Height="0.95*"/>
-        </Grid.RowDefinitions>
-        <Button x:Name="OpenPDFFile">
-            Open Documentation
-        </Button>
-    </Grid>
+    <StackPanel>
+        <Button Width="150" x:Name="OpenPDFFile" Content="Open Documentation" HorizontalAlignment="Left"/>
+        <TextBlock><LineBreak/></TextBlock>
+        <Label Content="Hilfe für Simulator" FontWeight="ExtraBold"/>
+        <TextBlock FontWeight="DemiBold">
+            <LineBreak/>
+            Start:      Startet das geladene Programm<LineBreak/>
+            Step:       Der nächste Befehl im Programm ausgeführt<LineBreak/>
+            Stop:       Das laufende Programm wird abgebrochen und der RAM wird refresht<LineBreak/>
+            <LineBreak/>
+            OpenFile:   LST-Datei in den Simulator laden
+        </TextBlock>
+    </StackPanel>
         
 </UserControl>
