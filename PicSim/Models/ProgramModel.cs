@@ -891,6 +891,12 @@ namespace PicSim.Models {
     }
 
     private void CheckCarryBit(int byte1, int byte2) {
+      if(byte1 < 0) {
+        byte1 = ~(byte1 - 1);
+      }
+      if(byte2 < 0) {
+        byte2 = ~(byte2 - 1);
+      }
       if (byte1 + byte2 > 255) {
         Ram.DirectToggleRegisterBit((int)SFR.STATUS, 0, true);
       }
