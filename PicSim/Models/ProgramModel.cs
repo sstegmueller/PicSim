@@ -76,7 +76,7 @@ namespace PicSim.Models {
         if (!T0CS) {
           _timerPrescaler++;
           if(_timerPrescaler >= prescaler) {
-            _timerPrescaler = 0;
+            _timerPrescaler -= prescaler;
             _timer++;
           }          
           CheckTimerOverflow();
@@ -85,6 +85,7 @@ namespace PicSim.Models {
           if (IsExternClock) {
             _timerPrescaler++;
             if (_timerPrescaler >= prescaler) {
+              _timerPrescaler -= prescaler;
               _timer++;
             }
           }
@@ -720,7 +721,12 @@ namespace PicSim.Models {
       int sub = ~Ram.GetRegisterValue() + 1;
       int subtraction = f + sub;
       CheckCarryBit(f, sub);
-      CheckDigitCarryBit(f, sub);
+      if(subtraction < 0) {
+        Ram.ToggleRegisterBit((int)SFR.STATUS, 0, false);
+      }
+      else {
+        Ram.ToggleRegisterBit((int)SFR.STATUS, 0, true);
+      }
       if (opModel.Args.Bool1) {
         Ram.SetRegisterValue(opModel.Args.Byte2, subtraction);
         CheckZeroBit(opModel.Args.Byte2);
@@ -853,7 +859,12 @@ namespace PicSim.Models {
       int wValue = Ram.GetRegisterValue();
       int sub = ~wValue + 1;
       int subtraction = literal + sub;
-      CheckCarryBit(literal, sub);
+      if (subtraction < 0) {
+        Ram.ToggleRegisterBit((int)SFR.STATUS, 0, false);
+      }
+      else {
+        Ram.ToggleRegisterBit((int)SFR.STATUS, 0, true);
+      }
       CheckDigitCarryBit(literal, sub);
       Ram.SetRegisterValue(subtraction);
       CheckZeroBit();
